@@ -1,24 +1,45 @@
 import React from 'react'
 import './Navbar.css'
 import logo from '../../assets/logoo.png'
-import {LiaToggleOffSolid} from 'react-icons/lia'
+import {LiaToggleOffSolid, LiaToggleOnSolid} from 'react-icons/lia'
+import {NavLink} from 'react-router-dom'
 
-const Navbar = () => {
+
+const Navbar = ({theme, setTheme}) => {
+
+    const toggle_mode = ()=>{
+        theme == 'light' ? setTheme('dark') : setTheme('light')
+    }
+
   return (
     <div className='navbar'>
 
         <img src={logo} alt="" className='logo'/>
 
         <ul>
-            <li>Dashboard</li>
-            <li>UI Customization</li>
-            <li>Voice Command Activation</li>
-            <li>Help</li>
-            <li>FAQs</li>
+            <li>
+                <NavLink to='/'>Dashboard</NavLink>
+            </li>
+            <li>
+                <NavLink to='/ui'>UI Customization</NavLink>
+            </li>
+            <li>
+                <NavLink to='/VoiceCommand'>Voice Command Activation</NavLink>
+            </li>
+            <li>
+                <NavLink to='/Help'>Help</NavLink>
+            </li>
+            <li>
+                <NavLink to='/FAQs'>FAQs</NavLink>
+            </li>
             
         </ul>
 
-        <LiaToggleOffSolid  className = 'toggle' />
+        <div>
+            {theme == 'light' && <LiaToggleOffSolid className = 'toggle' onClick={()=>{toggle_mode()}}/>}
+            {theme == 'dark' && <LiaToggleOnSolid className = 'toggle' onClick={()=>{toggle_mode()}}/>}
+        </div>
+
     </div>
   )
 }

@@ -7,7 +7,18 @@
     background: #61a9bd;
     padding-right: 15px 15%;
     margin-right: 10px;
+    transition: 0.5s;
 }
+
+.navbar a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar a.active {
+    color: rgb(169, 225, 234);
+  }
+
 
 .logo{
     width: 200px;
@@ -33,4 +44,9 @@ ul li {
     display: flex;
     margin-right: 80px;
     cursor: pointer;
+}
+
+.dark .navbar{
+    background: #2d3235;
+    color: #ffffff;
 }
