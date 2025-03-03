@@ -6,7 +6,7 @@ const Card = ({theme, setTheme, text, image}) => {
   return (
     <div className="card">
         {theme == 'light' &&
-        <div style={{color: 'white'}}>
+        <div >
             <img src={image} alt="" className="card-image"></img>
             <p style={{color: 'black'}} className='card-title'>{text}
             </p>
