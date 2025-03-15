@@ -10,6 +10,7 @@ import FormLabel from '@mui/material/FormLabel';
 import MicIcon from '@mui/icons-material/Mic';
 import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
+import jsPDF from 'jspdf';
 
 
 const ASL = () => {
@@ -19,6 +20,26 @@ const ASL = () => {
     const [currIndex, setCurrIndex] = useState(0); // Use state for currIndex
     const [wordArray, setWordArray] = useState([]);
     const [maxIndex, setMaxIndex] = useState(0);
+    const [ASLflag, setASLFlag] = useState(0);
+    const [transcriptionFlag, setTranscriptionFlag] = useState(0);
+    
+
+    const handleviewTranscript = (event) => {
+        setTranscriptionFlag(1);
+    };
+
+    const handleDownloadTranscript = () => {
+        if(!inputValue) return;
+    
+        const doc = new jsPDF();
+        doc.setFontSize(14);
+        doc.text(`${inputValue}`, 20, 30);
+        doc.save("transcript.pdf");
+    }
+
+    const handleDownloadASL = async () => {
+        
+    };
 
     const handleRecordClick = () => {
 
@@ -29,7 +50,8 @@ const ASL = () => {
     };
 
     const fetchTranslatedData = () => {
-
+        setASLFlag(0);
+        setTranscriptionFlag(1);
     };
 
     const handleInputChange = (event) => {
@@ -59,6 +81,8 @@ const ASL = () => {
 
     const fetchData = () => {
         try {
+            setTranscriptionFlag(0);
+            setASLFlag(1);
             const words = inputValue.split(' ');
             setWordArray(words);
             setMaxIndex(words.length - 1);
@@ -76,11 +100,11 @@ const ASL = () => {
         <div>
             <h1 style={{ textAlign: "center", marginTop: "20px" }}>Audio to ASL</h1>
             <div>
-                <Stack direction="row" spacing={1} justifyContent="center" margin={1}>
-                    <Box sx={{ padding: 1, flex: 0.4 }}>
-                        <img src={AudiotoASL} alt='no image' style={{ height: "300px", width: "auto" }}/>
+                <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
+                    <Box sx={{ padding: 1, flex: 0.3 }}>
+                        <img src={AudiotoASL} alt='no image' style={{ height: "300px", width: "400px" }}/>
                     </Box>
-                    <Box sx={{ padding: 1, flex: 0.6 }}>
+                    <Box sx={{ padding: 1, flex: 0.3 }}>
                         <div>
                             <FormControl>
                                 <FormControlLabel value="consent" control={<Radio defaultChecked />} label="Allow the app to record audio?" />
@@ -97,25 +121,50 @@ const ASL = () => {
                             onChange={handleInputChange}
                             placeholder="Enter text here"
                         />
-                        <p>You entered: {inputValue}</p>
-                        <button className="card-button" onClick={fetchData}>
-                            View ASL
-                        </button>
-                        <button className="card-button" onClick={fetchTranslatedData}>
-                            View Translation
-                        </button>
-                        
-                        <h1>My Local Video</h1>
-                        <video
-                            ref={videoRef}
-                            width="500"
-                            onEnded={handleVideoEnd}
-                            onLoadedData={handleLoadedData}
-                            autoPlay
-                        >
-                            <source src={videoSrc} type="video/mp4" />
-                            Your browser does not support the video tag.
-                        </video>
+                        <div>
+                            <p>You entered: {inputValue}</p>
+                            <button className="card-button" onClick={fetchData}>
+                                View ASL
+                            </button>
+                        </div>
+                        <div>
+                            <button className="card-button" onClick={fetchTranslatedData}>
+                                View Translation
+                            </button>
+                        </div>
+                    </Box>
+                    <Box sx={{ flex: 0.3}}>
+                        {ASLflag ? 
+                            <div sx={{margin: "2px"}}>
+                                <div>
+                                    <video
+                                        ref={videoRef}
+                                        width="400"
+                                        height="250"
+                                        onEnded={handleVideoEnd}
+                                        onLoadedData={handleLoadedData}
+                                        autoPlay
+                                    >
+                                        <source src={videoSrc} type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div>
+                                    <button className="card-button" onClick={handleDownloadASL}>
+                                        Save ASL
+                                    </button>
+                                </div>
+                            </div> :
+                            <div></div>
+                        }
+                        { transcriptionFlag ? 
+                            <div>
+                                <button className="card-button" onClick={handleDownloadTranscript}>
+                                    Save Transcription
+                                </button>
+                            </div> :
+                            <div></div>
+                        }
                     </Box>
                 </Stack>
             </div>                          
