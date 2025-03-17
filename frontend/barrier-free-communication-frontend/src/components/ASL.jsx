@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './ASL.css';
+import axios from "axios";
+import { io } from 'socket.io-client';
 import { Box, Container, Stack, Typography } from "@mui/material";
 import AudiotoASL from '../assets/AudiotoASL.png';
 import Radio from '@mui/material/Radio';
@@ -12,6 +14,7 @@ import MicNoneOutlinedIcon from '@mui/icons-material/MicNoneOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
+import { useEffect } from "react";
 import jsPDF from 'jspdf';
 
 
@@ -24,8 +27,39 @@ const ASL = () => {
     const [maxIndex, setMaxIndex] = useState(0);
     const [ASLflag, setASLFlag] = useState(0);
     const [transcriptionFlag, setTranscriptionFlag] = useState(0);
-    
+    const [saveTranscriptionFlag, setSaveTranscriptionFlag] = useState(0);
+    const [downloadASLFlag, setDownloadASLFlag] = useState(0);
+    const [downloadTranslationFlag, setDownloadTranslationFlag] = useState(0);
+    const [file, setFile] = useState(null);
+    const [transcript, setTranscript] = useState('');
+    const [recording, setRecording] = useState(false);
+    const [liveTranscript, setLiveTranscript] = useState('');
+    const [fileUpload, setFileUpload] = useState(0);
+    const mediaRecorderRef = useRef(null);
+    const audioChunksRef = useRef([]);
+    const socket = useRef(null);
+    const audioStreamRef = useRef(null);
 
+    useEffect(() => {
+        // Connect to backend WebSocket for live transcription
+        socket.current = io('http://localhost:5000');
+
+        socket.current.on('transcription', (data) => {
+        setLiveTranscript((prev) => prev + ' ' + data.text);
+        setInputValue((prev) => prev + ' ' + data.text);  // Set transcription to input
+        });
+
+        socket.current.on('error', (data) => {
+        console.error('Error from server:', data.error);
+        });
+
+        return () => {
+        socket.current.disconnect();
+        };
+    }, []);
+
+
+    
     const handleviewTranscript = (event) => {
         setTranscriptionFlag(1);
     };
@@ -40,24 +74,50 @@ const ASL = () => {
     }
 
     const handleDownloadASL = async () => {
+        if (!videoSrc) return;
         
+        const link = document.createElement("a");
+        link.href = videoSrc;
+        link.download = "asl_translation.mp4";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const handleRecordClick = () => {
-
+        setDownloadASLFlag(0);
+        setDownloadTranslationFlag(1);
+        setSaveTranscriptionFlag(1);
+        setRecording(true);
+        setFileUpload(false);
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.start();
+        
+        recognition.onresult = (event) => {
+            setInputValue(event.results[0][0].transcript);
+        };
+    
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error", event.error);
+        };
     };
 
     const handleUploadClick = () => {
-
+        setDownloadTranslationFlag(0);
+        setDownloadASLFlag(0);
+        setSaveTranscriptionFlag(0);
+        setFileUpload(1);
     };
 
     const fetchTranslatedData = () => {
+        setDownloadTranslationFlag(1);
+        setSaveTranscriptionFlag(0);
+        setDownloadASLFlag(0);
+        setDownloadTranslationFlag(1);
+        setSaveTranscriptionFlag(0);
         setASLFlag(0);
         setTranscriptionFlag(1);
-    };
-
-    const handleInputChange = (event) => {
-        setInputValue(event.target.value);
     };
 
     const handleVideoEnd = () => {
@@ -83,6 +143,9 @@ const ASL = () => {
 
     const fetchData = () => {
         try {
+            setDownloadASLFlag(1);
+            setDownloadTranslationFlag(0);
+            setSaveTranscriptionFlag(0);
             setTranscriptionFlag(0);
             setASLFlag(1);
             const words = inputValue.split(' ');
@@ -97,6 +160,56 @@ const ASL = () => {
             console.error(error);
         }
     };
+    // Handle audio file upload
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
+    const handleUpload = async () => {
+        if (!file) {
+        alert('Please select a .wav file to upload.');
+        return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+        const response = await axios.post('http://localhost:5000/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setTranscript(response.data.text);
+        setInputValue(response.data.text); // Set transcription to input
+        fetchData(); // Convert transcription to ASL
+        } catch (error) {
+        console.error('Error uploading file:', error);
+        setTranscript('Error processing file.');
+        }
+    };
+
+    
+    // Stop recording live audio
+    const stopRecording = () => {
+        if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stop();
+        setRecording(false);
+
+        if (audioStreamRef.current) {
+            audioStreamRef.current.getTracks().forEach((track) => track.stop());
+        }
+        }
+    };
+
+    // Send audio chunk to backend for transcription
+    const sendAudioToBackend = async (audioChunk) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(audioChunk);
+        reader.onloadend = () => {
+        const base64Data = reader.result.split(',')[1];
+        socket.current.emit('audio chunk', base64Data); // Ensure this event matches backend
+        };
+    };
+
 
     return (
         <div>
@@ -114,17 +227,21 @@ const ASL = () => {
                         </div>
                         <div sx={{margin: "2px"}}>
                             <MicNoneOutlinedIcon color="black" fontSize="large" style={{marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick}/>
-                            <FileUploadOutlinedIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>
+                            <FileUploadOutlinedIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>    
                         </div>
-                        
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            placeholder="Enter text here"
-                        />
+                            {}
                         <div>
-                            <p>You entered: {inputValue}</p>
+                            {fileUpload ? (
+                                <div className="audio-upload">
+                                    <input type="file" accept=".wav" onChange={handleFileChange} />
+                                    <button onClick={handleUpload}>Upload</button>
+                                    <h3>Transcription:</h3>
+                                    <p>{transcript}</p>
+                                </div>) : <div></div>
+                            }
+                        </div>
+
+                        <div>
                             <button className="card-button" onClick={fetchData}>
                                 View ASL
                             </button>
@@ -135,8 +252,22 @@ const ASL = () => {
                             </button>
                         </div>
                     </Box>
-                    <Box sx={{ flex: 0.3}}>
-                        {ASLflag ? 
+                    <Box sx={{ padding: 1, flex: 0.3}}>
+                        {inputValue && saveTranscriptionFlag ? 
+                            <div>
+                                <div>
+                                    <Typography variant='h6'>Transcription of the recorded audio</Typography>
+                                </div>
+                                <div>{inputValue}</div>
+                                <div>
+                                <button className="card-button" onClick={handleDownloadTranscript}>
+                                    Save Transcription
+                                </button>
+                            </div>
+                            </div> : 
+                            <div></div>
+                        }
+                        {ASLflag && downloadASLFlag ? 
                             <div sx={{margin: "2px"}}>
                                 <div>
                                     <video
@@ -159,10 +290,10 @@ const ASL = () => {
                             </div> :
                             <div></div>
                         }
-                        { transcriptionFlag ? 
+                        { transcriptionFlag && downloadTranslationFlag ? 
                             <div>
                                 <button className="card-button" onClick={handleDownloadTranscript}>
-                                    Save Transcription
+                                    Save Translation
                                 </button>
                             </div> :
                             <div></div>
