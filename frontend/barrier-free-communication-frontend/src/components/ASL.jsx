@@ -8,6 +8,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import MicIcon from '@mui/icons-material/Mic';
+import MicNoneOutlinedIcon from '@mui/icons-material/MicNoneOutlined';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
 import jsPDF from 'jspdf';
@@ -111,8 +113,8 @@ const ASL = () => {
                             </FormControl>
                         </div>
                         <div sx={{margin: "2px"}}>
-                            <MicIcon color="black" fontSize="large" style={{marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick}/>
-                            <UploadIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>
+                            <MicNoneOutlinedIcon color="black" fontSize="large" style={{marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick}/>
+                            <FileUploadOutlinedIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>
                         </div>
                         
                         <input

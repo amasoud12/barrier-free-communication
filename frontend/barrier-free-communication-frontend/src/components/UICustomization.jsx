@@ -5,13 +5,19 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
+import { useState } from 'react';
 
 const UICustomization = () => {
-  const [selectedValue, setSelectedValue] = React.useState('a');
+  const [selectedFont, setSelectedFont] = useState("Arial"); // Tracks Font Style
+  const [selectedSize, setSelectedSize] = useState("14"); // Tracks Font Size
+  const [selectedValue, setSelectedValue] = useState("a"); // Tracks Radio Selection
   
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
+  const handleFontChange = (event) => setSelectedFont(event.target.value);
+  const handleSizeChange = (event) => setSelectedSize(event.target.value);
+
 
   const controlProps = (item) => ({
     checked: selectedValue === item,
@@ -34,10 +40,9 @@ const UICustomization = () => {
               id="demo-simple-select-autowidth"
               autoWidth
               label="FontStyle"
+              value={selectedFont}
+              onChange={handleFontChange}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
               <MenuItem value="Arial">Arial</MenuItem>
               <MenuItem value="Times New Roman">Times New Roman</MenuItem>
               <MenuItem value="Courier New">Courier New</MenuItem>
@@ -56,10 +61,9 @@ const UICustomization = () => {
               id="demo-simple-select-autowidth"
               autoWidth
               label="FontSize"
+              value={selectedSize}
+              onChange={handleSizeChange}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
               <MenuItem value="10">10</MenuItem>
               <MenuItem value="12">12</MenuItem>
               <MenuItem value="14">14</MenuItem>
