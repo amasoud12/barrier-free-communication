@@ -9,3 +9,7 @@
     font-size: large;
     cursor: pointer;
 }
+
+.audio-upload .dropdown{
+    flex-direction: column;
+}

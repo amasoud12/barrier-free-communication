@@ -16,10 +16,12 @@ import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
 import { useEffect } from "react";
 import jsPDF from 'jspdf';
+import fs from 'fs';
 
 
 const ASL = () => {
     const [inputValue, setInputValue] = useState('');
+    const [transcribe, setTranscribeValue] = useState('');
     const [videoSrc, setVideoSrc] = useState('/assets/A.mp4');
     const videoRef = useRef(null);
     const [currIndex, setCurrIndex] = useState(0); // Use state for currIndex
@@ -39,6 +41,7 @@ const ASL = () => {
     const audioChunksRef = useRef([]);
     const socket = useRef(null);
     const audioStreamRef = useRef(null);
+    const [selectedOption, setSelectedOption] = useState('');
 
     useEffect(() => {
         // Connect to backend WebSocket for live transcription
@@ -64,12 +67,17 @@ const ASL = () => {
         setTranscriptionFlag(1);
     };
 
-    const handleDownloadTranscript = () => {
-        if(!inputValue) return;
+    const handleDownloadTranscript = async() => {
+
+        const fontData = fs.readFileSync('../assets/NoToSans.ttf').toString('base64');
+        console.log(fontData); // Copy this output
+
+        if(!transcribe) return;
     
         const doc = new jsPDF();
         doc.setFontSize(14);
-        doc.text(`${inputValue}`, 20, 30);
+ 
+        doc.text(`${transcribe}`, 20, 30);
         doc.save("transcript.pdf");
     }
 
@@ -210,6 +218,29 @@ const ASL = () => {
         };
     };
 
+    const handleChange = async(event) => {
+        setSelectedOption(event.target.value);
+
+        const userData = {
+            text: inputValue,
+            target: event.target.value
+          };
+
+          const response = await fetch('http://localhost:5000/transcribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',  // Specify that we're sending JSON
+            },
+            body: JSON.stringify(userData),  // Convert the JS object to a JSON string
+          });
+      
+          const data = await response.json();  // Parse the JSON response from Flask
+
+          
+          setTranscribeValue(data.message);
+
+      };
+
 
     return (
         <div>
@@ -236,8 +267,25 @@ const ASL = () => {
                                     <input type="file" accept=".wav" onChange={handleFileChange} />
                                     <button onClick={handleUpload}>Upload</button>
                                     <h3>Transcription:</h3>
-                                    <p>{transcript}</p>
+                                    <div>
+                                        <p>{transcript}</p>
+
+                                        <h3>Which Language to Transcribe into:</h3>
+                                            <select value={selectedOption} onChange={handleChange}>
+                                                <option value="Select Option">Select One</option>
+                                                <option value="English">English</option>
+                                                <option value="Hindi">Hindi</option>
+                                                <option value="Arabic">Arabic</option>
+                                            </select>
+
+                                                <p>Selected Option: {selectedOption}</p>
+
+
+                                    </div>
+                                    
                                 </div>) : <div></div>
+
+
                             }
                         </div>
 
@@ -258,7 +306,7 @@ const ASL = () => {
                                 <div>
                                     <Typography variant='h6'>Transcription of the recorded audio</Typography>
                                 </div>
-                                <div>{inputValue}</div>
+                                <div>{transcribe}</div>
                                 <div>
                                 <button className="card-button" onClick={handleDownloadTranscript}>
                                     Save Transcription
@@ -290,8 +338,12 @@ const ASL = () => {
                             </div> :
                             <div></div>
                         }
+
+              
+
                         { transcriptionFlag && downloadTranslationFlag ? 
                             <div>
+                                <div>{transcribe}</div>
                                 <button className="card-button" onClick={handleDownloadTranscript}>
                                     Save Translation
                                 </button>

@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 from flask_cors import CORS
 import speech_recognition as sr
+from deep_translator import GoogleTranslator
 
 # Initializing Flask and WebSockets
 app = Flask(__name__)
@@ -101,6 +102,41 @@ def audio_chunk_handling(data):
     # Error handling - returning the exact error message
     except Exception as e:
         socketio.emit("error", {"error": str(e)})
+
+
+# API route to transcribe
+@app.route("/transcribe", methods=["POST"]) 
+def transcribe():
+    if request.is_json:
+        data = request.get_json()
+        text = data.get('text')
+        tar = data.get('target')
+
+        print(tar)
+
+        if(tar == 'English'):
+            ttgt = 'en'
+        elif(tar == 'Arabic'):
+            ttgt = 'ar'
+        elif(tar == 'Hindi'):
+            ttgt= 'hi'
+        else:
+            ttgt = 'en'
+    
+
+        translator = GoogleTranslator(source='auto', target=ttgt)
+
+        # Translate the text
+        translated_text = translator.translate(text)
+
+        # Print the translated text
+        print(translated_text)
+
+        return jsonify({
+            'message': f"{translated_text}"
+        }), 200  # Send back a successful response
+    
+    return jsonify({'error': 'Request must be JSON'}), 400
 
 # Main function to run the app
 if __name__ == '__main__':
