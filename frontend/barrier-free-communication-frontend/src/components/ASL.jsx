@@ -16,6 +16,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
 import { useEffect } from "react";
 import jsPDF from 'jspdf';
+import html2canvas from "html2canvas";
 
 
 const ASL = () => {
@@ -66,16 +67,35 @@ const ASL = () => {
         setTranscriptionFlag(1);
     };
 
-    const handleDownloadTranscript = async() => {
-
-        if(!transcribe) return;
+    const handleDownloadTranscript = async () => {
+        if (!transcribe) {
+            alert("No text available to download!");
+            return;
+        }
     
-        const doc = new jsPDF();
-        doc.setFontSize(14);
- 
-        doc.text(`${transcribe}`, 20, 30);
-        doc.save("transcript.pdf");
-    }
+        const tempDiv = document.createElement("div");
+        tempDiv.style.fontFamily = "'Arial', sans-serif";
+        tempDiv.style.fontSize = "16px";
+        tempDiv.style.color = "black";
+        tempDiv.style.backgroundColor = "white";
+        tempDiv.style.padding = "20px";
+        tempDiv.style.width = "500px";
+        tempDiv.style.textAlign = "right"; 
+        tempDiv.style.direction = /[\u0600-\u06FF]/.test(transcribe) ? "rtl" : "ltr"; 
+        tempDiv.innerText = transcribe;
+        
+        document.body.appendChild(tempDiv);
+    
+        html2canvas(tempDiv, { scale: 2 }).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            
+            const doc = new jsPDF();
+            doc.addImage(imgData, "PNG", 10, 10, 180, 0); 
+            
+            doc.save("translated_transcript.pdf");
+            document.body.removeChild(tempDiv); 
+        });
+    };
 
     const handleDownloadASL = async () => {
         if (!videoSrc) return;
