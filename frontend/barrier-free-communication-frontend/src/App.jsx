@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard'
 import {Route, Routes} from 'react-router-dom'
 import ASL from './components/ASL'
 import { Typography } from '@mui/material'
+import YouTubeCaptionGenerator from './components/Youtube'
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/help' element={<Help theme={theme} setTheme={setTheme}/>}/>
         <Route path='/faqs' element={<FAQ theme={theme} setTheme={setTheme}/>}/>
         <Route path='/audioASL' element={<ASL theme={theme} setTheme={setTheme}/>}/>
+        <Route path='/youtube' element={<YouTubeCaptionGenerator theme={theme} setTheme={setTheme}/>}/>
       </Routes>
 
       <div className='feedback'>

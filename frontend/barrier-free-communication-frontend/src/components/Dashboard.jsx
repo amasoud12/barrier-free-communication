@@ -18,7 +18,7 @@ const Dashboard = ({theme, setTheme}) => {
             <Card theme={theme} setTheme={setTheme} text={'Provide the American Sign Language video to view the text output and transcription to other languages.'} image={ASLtoText} buttonText={'ASL to Text'} link={'aslText'}/>
           </Box>
           <Box sx={{ padding: 2, textAlign: "center", flex: 1 }}>
-            <Card theme={theme} setTheme={setTheme} text={'Provide the social media URL(Youtube) to view the suitable caption.'} image={Captioning} buttonText={'Captioning'} link={'captioning'}/>
+            <Card theme={theme} setTheme={setTheme} text={'Provide the social media URL(Youtube) to view the suitable caption.'} image={Captioning} buttonText={'Captioning'} link={'youtube'}/>
           </Box>
         </Stack>
     </div>
