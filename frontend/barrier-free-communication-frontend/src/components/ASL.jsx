@@ -119,6 +119,7 @@ const ASL = () => {
         recognition.start();
         
         recognition.onresult = (event) => {
+            setTranscript(event.results[0][0].transcript);
             setInputValue(event.results[0][0].transcript);
         };
     
@@ -275,34 +276,31 @@ const ASL = () => {
                         <div sx={{margin: "2px"}}>
                             <MicNoneOutlinedIcon color="black" fontSize="large" style={{marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick}/>
                             <FileUploadOutlinedIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>    
-                        </div>
-                            {}
-                        <div>
+                        
                             {fileUpload ? (
                                 <div className="audio-upload">
                                     <input type="file" accept=".wav" onChange={handleFileChange} />
                                     <button onClick={handleUpload}>Upload</button>
-                                    <h3>Transcription:</h3>
-                                    <div>
-                                        <p>{transcript}</p>
-
-                                        <h3>Which Language to Transcribe into:</h3>
-                                            <select value={selectedOption} onChange={handleChange}>
-                                                <option value="Select Option">Select One</option>
-                                                <option value="English">English</option>
-                                                <option value="Hindi">Hindi</option>
-                                                <option value="Arabic">Arabic</option>
-                                            </select>
-
-                                                <p>Selected Option: {selectedOption}</p>
-
-
-                                    </div>
-                                    
-                                </div>) : <div></div>
-
-
+                                </div>) : <div></div> 
                             }
+                            <div>
+                                <h3>Transcription:</h3>
+                                <div>
+                                    <p>{transcript}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Which Language to Transcribe into:</h3>
+                                <select value={selectedOption} onChange={handleChange}>
+                                    <option value="Select Option">Select One</option>
+                                    <option value="English">English</option>
+                                    <option value="Hindi">Hindi</option>
+                                    <option value="Arabic">Arabic</option>
+                                </select>
+
+                                    <p>Selected Option: {selectedOption}</p>
+                            </div>
+                            
                         </div>
 
                         <div>
@@ -317,20 +315,6 @@ const ASL = () => {
                         </div>
                     </Box>
                     <Box sx={{ padding: 1, flex: 0.3}}>
-                        {inputValue && saveTranscriptionFlag ? 
-                            <div>
-                                <div>
-                                    <Typography variant='h6'>Transcription of the recorded audio</Typography>
-                                </div>
-                                <div>{transcribe}</div>
-                                <div>
-                                <button className="card-button" onClick={handleDownloadTranscript}>
-                                    Save Transcription
-                                </button>
-                            </div>
-                            </div> : 
-                            <div></div>
-                        }
                         {ASLflag && downloadASLFlag ? 
                             <div sx={{margin: "2px"}}>
                                 <div>
