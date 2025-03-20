@@ -16,7 +16,6 @@ import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
 import { useEffect } from "react";
 import jsPDF from 'jspdf';
-import fs from 'fs';
 
 
 const ASL = () => {
@@ -68,9 +67,6 @@ const ASL = () => {
     };
 
     const handleDownloadTranscript = async() => {
-
-        const fontData = fs.readFileSync('../assets/NoToSans.ttf').toString('base64');
-        console.log(fontData); // Copy this output
 
         if(!transcribe) return;
     
