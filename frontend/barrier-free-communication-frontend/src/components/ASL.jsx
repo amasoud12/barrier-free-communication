@@ -16,6 +16,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
 import { useEffect } from "react";
 import jsPDF from 'jspdf';
+import html2canvas from "html2canvas";
 
 
 const ASL = () => {
@@ -66,16 +67,35 @@ const ASL = () => {
         setTranscriptionFlag(1);
     };
 
-    const handleDownloadTranscript = async() => {
-
-        if(!transcribe) return;
+    const handleDownloadTranscript = async () => {
+        if (!transcribe) {
+            alert("No text available to download!");
+            return;
+        }
     
-        const doc = new jsPDF();
-        doc.setFontSize(14);
- 
-        doc.text(`${transcribe}`, 20, 30);
-        doc.save("transcript.pdf");
-    }
+        const tempDiv = document.createElement("div");
+        tempDiv.style.fontFamily = "'Arial', sans-serif";
+        tempDiv.style.fontSize = "16px";
+        tempDiv.style.color = "black";
+        tempDiv.style.backgroundColor = "white";
+        tempDiv.style.padding = "20px";
+        tempDiv.style.width = "500px";
+        tempDiv.style.textAlign = "right"; 
+        tempDiv.style.direction = /[\u0600-\u06FF]/.test(transcribe) ? "rtl" : "ltr"; 
+        tempDiv.innerText = transcribe;
+        
+        document.body.appendChild(tempDiv);
+    
+        html2canvas(tempDiv, { scale: 2 }).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            
+            const doc = new jsPDF();
+            doc.addImage(imgData, "PNG", 10, 10, 180, 0); 
+            
+            doc.save("translated_transcript.pdf");
+            document.body.removeChild(tempDiv); 
+        });
+    };
 
     const handleDownloadASL = async () => {
         if (!videoSrc) return;
@@ -99,6 +119,7 @@ const ASL = () => {
         recognition.start();
         
         recognition.onresult = (event) => {
+            setTranscript(event.results[0][0].transcript);
             setInputValue(event.results[0][0].transcript);
         };
     
@@ -255,34 +276,31 @@ const ASL = () => {
                         <div sx={{margin: "2px"}}>
                             <MicNoneOutlinedIcon color="black" fontSize="large" style={{marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick}/>
                             <FileUploadOutlinedIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>    
-                        </div>
-                            {}
-                        <div>
+                        
                             {fileUpload ? (
                                 <div className="audio-upload">
                                     <input type="file" accept=".wav" onChange={handleFileChange} />
                                     <button onClick={handleUpload}>Upload</button>
-                                    <h3>Transcription:</h3>
-                                    <div>
-                                        <p>{transcript}</p>
-
-                                        <h3>Which Language to Transcribe into:</h3>
-                                            <select value={selectedOption} onChange={handleChange}>
-                                                <option value="Select Option">Select One</option>
-                                                <option value="English">English</option>
-                                                <option value="Hindi">Hindi</option>
-                                                <option value="Arabic">Arabic</option>
-                                            </select>
-
-                                                <p>Selected Option: {selectedOption}</p>
-
-
-                                    </div>
-                                    
-                                </div>) : <div></div>
-
-
+                                </div>) : <div></div> 
                             }
+                            <div>
+                                <h3>Transcription:</h3>
+                                <div>
+                                    <p>{transcript}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Which Language to Transcribe into:</h3>
+                                <select value={selectedOption} onChange={handleChange}>
+                                    <option value="Select Option">Select One</option>
+                                    <option value="English">English</option>
+                                    <option value="Hindi">Hindi</option>
+                                    <option value="Arabic">Arabic</option>
+                                </select>
+
+                                    <p>Selected Option: {selectedOption}</p>
+                            </div>
+                            
                         </div>
 
                         <div>
@@ -297,20 +315,6 @@ const ASL = () => {
                         </div>
                     </Box>
                     <Box sx={{ padding: 1, flex: 0.3}}>
-                        {inputValue && saveTranscriptionFlag ? 
-                            <div>
-                                <div>
-                                    <Typography variant='h6'>Transcription of the recorded audio</Typography>
-                                </div>
-                                <div>{transcribe}</div>
-                                <div>
-                                <button className="card-button" onClick={handleDownloadTranscript}>
-                                    Save Transcription
-                                </button>
-                            </div>
-                            </div> : 
-                            <div></div>
-                        }
                         {ASLflag && downloadASLFlag ? 
                             <div sx={{margin: "2px"}}>
                                 <div>
