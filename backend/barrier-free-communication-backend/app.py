@@ -12,7 +12,14 @@ from youtube_transcript_api.proxies import WebshareProxyConfig
 
 # Initializing Flask and WebSockets
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:5173"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"],
+        "expose_headers": ["Content-Disposition"]
+    }
+})
 
 # Enabling WebSockets
 socketio = SocketIO(app, cors_allowed_origins="*")
