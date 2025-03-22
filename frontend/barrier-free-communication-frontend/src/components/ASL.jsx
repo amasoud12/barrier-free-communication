@@ -21,7 +21,7 @@ import jsPDF from 'jspdf';
 const ASL = () => {
     const [inputValue, setInputValue] = useState('');
     const [transcribe, setTranscribeValue] = useState('');
-    const [videoSrc, setVideoSrc] = useState('/assets/A.mp4');
+    const [videoSrc, setVideoSrc] = useState('../assets/A.mp4');
     const videoRef = useRef(null);
     const [currIndex, setCurrIndex] = useState(0); // Use state for currIndex
     const [wordArray, setWordArray] = useState([]);
@@ -44,7 +44,7 @@ const ASL = () => {
 
     useEffect(() => {
         // Connect to backend WebSocket for live transcription
-        socket.current = io('http://localhost:5000');
+        socket.current = io('https://steady-pocket-production.up.railway.app/');
 
         socket.current.on('transcription', (data) => {
         setLiveTranscript((prev) => prev + ' ' + data.text);
@@ -128,7 +128,7 @@ const ASL = () => {
         setCurrIndex((prevIndex) => { // Use functional update
             const newIndex = prevIndex + 1;
             if (newIndex <= maxIndex) {
-                setVideoSrc(`/assets/${wordArray[newIndex]}.mp4`);
+                setVideoSrc(`../assets/${wordArray[newIndex]}.mp4`);
                 if (videoRef.current) {
                     videoRef.current.load();
                 }
@@ -156,7 +156,7 @@ const ASL = () => {
             setWordArray(words);
             setMaxIndex(words.length - 1);
             setCurrIndex(0); // Reset index
-            setVideoSrc(`/assets/${words[0]}.mp4`);
+            setVideoSrc(`../assets/${words[0]}.mp4`);
             if (videoRef.current) {
                 videoRef.current.load();
             }
@@ -179,9 +179,7 @@ const ASL = () => {
         formData.append('file', file);
 
         try {
-        const response = await axios.post('http://localhost:5000/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await axios.post('https://steady-pocket-production.up.railway.app/upload', formData);
         setTranscript(response.data.text);
         setInputValue(response.data.text); // Set transcription to input
         fetchData(); // Convert transcription to ASL
@@ -222,7 +220,7 @@ const ASL = () => {
             target: event.target.value
           };
 
-          const response = await fetch('http://localhost:5000/transcribe', {
+          const response = await fetch('https://steady-pocket-production.up.railway.app/transcribe', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',  // Specify that we're sending JSON
