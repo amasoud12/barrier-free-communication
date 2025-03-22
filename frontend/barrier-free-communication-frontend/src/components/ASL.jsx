@@ -17,6 +17,8 @@ import Button from '@mui/material/Button';
 import { useEffect } from "react";
 import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
 
 const ASL = () => {
@@ -42,6 +44,9 @@ const ASL = () => {
     const socket = useRef(null);
     const audioStreamRef = useRef(null);
     const [selectedOption, setSelectedOption] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [ffmpeg] = useState(() => new FFmpeg());
+    const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
 
     useEffect(() => {
         // Connect to backend WebSocket for live transcription
@@ -61,6 +66,20 @@ const ASL = () => {
         };
     }, []);
 
+    useEffect(() => {
+        // Load FFmpeg
+        const loadFFmpeg = async () => {
+            try {
+                await ffmpeg.load();
+                setFfmpegLoaded(true);
+                console.log('FFmpeg loaded successfully');
+            } catch (error) {
+                console.error('Error loading FFmpeg:', error);
+            }
+        };
+
+        loadFFmpeg();
+    }, [ffmpeg]);
 
     
     const handleviewTranscript = (event) => {
@@ -98,14 +117,63 @@ const ASL = () => {
     };
 
     const handleDownloadASL = async () => {
-        if (!videoSrc) return;
+        if (!wordArray.length) {
+            alert('No ASL content to download');
+            return;
+        }
+
+        if (!ffmpegLoaded) {
+            alert('FFmpeg is still loading. Please wait...');
+            return;
+        }
         
-        const link = document.createElement("a");
-        link.href = videoSrc;
-        link.download = "asl_translation.mp4";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        setIsLoading(true);
+        try {
+            const videoNames = wordArray.map(word => `${word}.mp4`);
+            console.log('Videos to merge:', videoNames);
+            
+            // Create a text file with the list of videos
+            let concatText = '';
+            for (let i = 0; i < videoNames.length; i++) {
+                const response = await fetch(`/assets/${videoNames[i]}`);
+                const videoBlob = await response.blob();
+                await ffmpeg.writeFile(`video${i}.mp4`, await fetchFile(videoBlob));
+                concatText += `file video${i}.mp4\n`;
+            }
+            
+            await ffmpeg.writeFile('concat.txt', concatText);
+
+            // Merge videos using FFmpeg
+            await ffmpeg.exec([
+                '-f', 'concat',
+                '-safe', '0',
+                '-i', 'concat.txt',
+                '-c', 'copy',
+                'output.mp4'
+            ]);
+
+            // Read the output file
+            const data = await ffmpeg.readFile('output.mp4');
+            const blob = new Blob([data.buffer], { type: 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'asl_video.mp4';
+            document.body.appendChild(link);
+            link.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+
+        } catch (error) {
+            console.error('Error merging videos:', error);
+            alert('An error occurred while creating the ASL video: ' + error.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleRecordClick = () => {
@@ -331,8 +399,8 @@ const ASL = () => {
                                     </video>
                                 </div>
                                 <div>
-                                    <button className="card-button" onClick={handleDownloadASL}>
-                                        Save ASL
+                                    <button className="card-button" onClick={handleDownloadASL} disabled={isLoading}>
+                                        {isLoading ? 'Processing...' : 'Save ASL'}
                                     </button>
                                 </div>
                             </div> :
