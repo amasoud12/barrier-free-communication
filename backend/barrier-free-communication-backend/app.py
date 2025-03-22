@@ -139,20 +139,26 @@ def transcribe():
     
     return jsonify({'error': 'Request must be JSON'}), 400
 
+def fetch_transcript_with_proxy(video_id):
+    try:
+        # Fetch the transcript using the proxy configuration
+        fetched_transcript = YouTubeTranscriptApi.get_transcript(video_id, proxies=proxy_config)
+
+        captions = [snippet['text'] for snippet in fetched_transcript]
+        formatted_captions = '\n'.join(captions)
+
+        return {"captions": formatted_captions}, 200
+
+    except Exception as e:
+        return {"error": f"Failed to fetch captions: {str(e)}"}, 500
+
 @app.route('/generate-captions', methods=['POST'])
 def generate_captions():
-    """
-    Generates captions from a YouTube video given its URL.
-
-    Returns:
-        A JSON response containing the captions or an error message.
-    """
     data = request.get_json()
     youtube_url = data.get('youtube_url')
 
-    # Extract video ID from the URL
     if not youtube_url or 'v=' not in youtube_url:
-      return jsonify({"error": "Invalid or missing YouTube URL"}), 400
+        return jsonify({"error": "Invalid or missing YouTube URL"}), 400
 
     video_id = youtube_url.split('v=')[1]
     if '&' in video_id:
@@ -161,18 +167,9 @@ def generate_captions():
     if not video_id:
         return jsonify({"error": "Invalid YouTube URL"}), 400
 
-    try:
-        # Fetch transcript using youtube_transcript_api
-        fetched_transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    response, status_code = fetch_transcript_with_proxy(video_id)
+    return jsonify(response), status_code
 
-        captions = [snippet['text'] for snippet in fetched_transcript]
-        # Join captions to make it easier for frontend rendering
-        formatted_captions = '\n'.join(captions)
-
-        return jsonify({"captions": formatted_captions}), 200
-
-    except Exception as e:
-        return jsonify({"error": f"Failed to fetch captions: {str(e)}"}), 500
 # Main function to run the app
 if __name__ == '__main__':
     socketio.run(app, debug=True, host="0.0.0.0", port=5000)
