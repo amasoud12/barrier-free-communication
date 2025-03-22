@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Box, Container, Stack, Typography, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import captioningImage from '../public/assets/Captioning.png';
+import captioningImage from '/assets/Captioning.png';
 import jsPDF from 'jspdf';
 import './Youtube.css';
 

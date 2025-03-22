@@ -3,7 +3,7 @@ import './ASL.css';
 import axios from "axios";
 import { io } from 'socket.io-client';
 import { Box, Container, Stack, Typography } from "@mui/material";
-import AudiotoASL from '../public/assets/AudiotoASL.png';
+import AudiotoASL from '/assets/AudiotoASL.png';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
