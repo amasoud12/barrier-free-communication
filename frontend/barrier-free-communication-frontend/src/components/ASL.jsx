@@ -234,6 +234,13 @@ const ASL = () => {
         }
     };
 
+    const toTitleCase = (str) => {
+        return str.toLowerCase().split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    }
+    
+
     const fetchData = () => {
         try {
             setDownloadASLFlag(1);
@@ -241,7 +248,8 @@ const ASL = () => {
             setSaveTranscriptionFlag(0);
             setTranscriptionFlag(0);
             setASLFlag(1);
-            const words = inputValue.split(' ');
+            const iValue = toTitleCase(inputValue);
+            const words = iValue.split(' ');
             setWordArray(words);
             setMaxIndex(words.length - 1);
             setCurrIndex(0); // Reset index
