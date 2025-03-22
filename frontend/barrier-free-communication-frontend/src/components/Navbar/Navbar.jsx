@@ -1,6 +1,6 @@
 import React from 'react'
 import './Navbar.css'
-import logo from '../../assets/logoo.png'
+import logo from '../../public/assets/logoo.png'
 import {LiaToggleOffSolid, LiaToggleOnSolid} from 'react-icons/lia'
 import {NavLink} from 'react-router-dom'
 

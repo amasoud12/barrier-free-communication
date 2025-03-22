@@ -1,8 +1,8 @@
 import React from 'react'
 import Card from './Card/Card'
-import AudiotoASL from '../assets/AudiotoASL.png'
-import ASLtoText from '../assets/ASLtoText.png'
-import Captioning from '../assets/Captioning.png'
+import AudiotoASL from '../public/assets/AudiotoASL.png'
+import ASLtoText from '../public/assets/ASLtoText.png'
+import Captioning from '../public/assets/Captioning.png'
 import './Dashboard.css'
 import { Box, Container, Stack, Typography } from "@mui/material";
 

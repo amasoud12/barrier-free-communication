@@ -3,7 +3,7 @@ import './ASL.css';
 import axios from "axios";
 import { io } from 'socket.io-client';
 import { Box, Container, Stack, Typography } from "@mui/material";
-import AudiotoASL from '../assets/AudiotoASL.png';
+import AudiotoASL from '../public/assets/AudiotoASL.png';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -22,7 +22,7 @@ import html2canvas from "html2canvas";
 const ASL = () => {
     const [inputValue, setInputValue] = useState('');
     const [transcribe, setTranscribeValue] = useState('');
-    const [videoSrc, setVideoSrc] = useState('../assets/A.mp4');
+    const [videoSrc, setVideoSrc] = useState('/assets/A.mp4');
     const videoRef = useRef(null);
     const [currIndex, setCurrIndex] = useState(0); // Use state for currIndex
     const [wordArray, setWordArray] = useState([]);
@@ -149,7 +149,7 @@ const ASL = () => {
         setCurrIndex((prevIndex) => { // Use functional update
             const newIndex = prevIndex + 1;
             if (newIndex <= maxIndex) {
-                setVideoSrc(`../assets/${wordArray[newIndex]}.mp4`);
+                setVideoSrc(`/assets/${wordArray[newIndex]}.mp4`);
                 if (videoRef.current) {
                     videoRef.current.load();
                 }
@@ -177,7 +177,7 @@ const ASL = () => {
             setWordArray(words);
             setMaxIndex(words.length - 1);
             setCurrIndex(0); // Reset index
-            setVideoSrc(`../assets/${words[0]}.mp4`);
+            setVideoSrc(`/assets/${words[0]}.mp4`);
             if (videoRef.current) {
                 videoRef.current.load();
             }
