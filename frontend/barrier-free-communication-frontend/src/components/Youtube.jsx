@@ -133,7 +133,7 @@ function YouTubeCaptionGenerator({ theme }) {
                 
                 <button 
                   type="submit" 
-                  className="youtube-button"
+                  className="youtube-button custom-button"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Generating...' : 'Generate Caption'}
@@ -169,7 +169,7 @@ function YouTubeCaptionGenerator({ theme }) {
                   
                   <button 
                     onClick={handleSaveCaptions}
-                    className="youtube-button"
+                    className="youtube-button custom-button"
                   >
                     Save Captions
                   </button>

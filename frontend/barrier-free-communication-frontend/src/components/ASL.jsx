@@ -354,7 +354,7 @@ const ASL = () => {
                             {fileUpload ? (
                                 <div className="audio-upload">
                                     <input type="file" accept=".wav" onChange={handleFileChange} />
-                                    <button onClick={handleUpload}>Upload</button>
+                                    <button className="custom-button" onClick={handleUpload}>Upload</button>
                                 </div>) : <div></div> 
                             }
                             <div>
@@ -378,12 +378,12 @@ const ASL = () => {
                         </div>
 
                         <div>
-                            <button className="card-button" onClick={fetchData}>
+                            <button className="card-button custom-button" onClick={fetchData}>
                                 View ASL
                             </button>
                         </div>
                         <div>
-                            <button className="card-button" onClick={fetchTranslatedData}>
+                            <button className="card-button custom-button" onClick={fetchTranslatedData}>
                                 View Translation
                             </button>
                         </div>
@@ -405,8 +405,8 @@ const ASL = () => {
                                     </video>
                                 </div>
                                 <div>
-                                    <button className="card-button" onClick={handleDownloadASL} disabled={isLoading}>
-                                        {isLoading ? 'Processing...' : 'Save ASL'}
+                                    <button className="card-button custom-button" onClick={handleDownloadASL} disabled={isLoading}>
+                                        {isLoading ? 'Downloading...' : 'Save ASL'}
                                     </button>
                                 </div>
                             </div> :
@@ -418,7 +418,7 @@ const ASL = () => {
                         { transcriptionFlag && downloadTranslationFlag ? 
                             <div>
                                 <div>{transcribe}</div>
-                                <button className="card-button" onClick={handleDownloadTranscript}>
+                                <button className="card-button custom-button" onClick={handleDownloadTranscript}>
                                     Save Translation
                                 </button>
                             </div> :
