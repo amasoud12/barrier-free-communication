@@ -19,7 +19,7 @@ import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
-
+import { useTheme } from '../context/ThemeContext';
 
 const ASL = () => {
     const [inputValue, setInputValue] = useState('');
@@ -47,6 +47,7 @@ const ASL = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [ffmpeg] = useState(() => new FFmpeg());
     const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
+    const { fontStyle, fontSize } = useTheme();
 
     useEffect(() => {
         // Connect to backend WebSocket for live transcription
@@ -334,7 +335,27 @@ const ASL = () => {
 
 
     return (
-        <div>
+        <Box sx={{ 
+            width: '100%', 
+            minHeight: '100vh', 
+            fontFamily: fontStyle,
+            '& .MuiTypography-root': {
+                fontFamily: fontStyle,
+                fontSize: `${fontSize}px`
+            },
+            '& .MuiButton-root': {
+                fontFamily: fontStyle,
+                fontSize: `${fontSize}px`
+            },
+            '& .MuiFormLabel-root': {
+                fontFamily: fontStyle,
+                fontSize: `${fontSize}px`
+            },
+            '& .MuiFormControlLabel-label': {
+                fontFamily: fontStyle,
+                fontSize: `${fontSize}px`
+            }
+        }}>
             <h1 style={{ textAlign: "center", marginTop: "20px" }}>Audio to ASL</h1>
             <div>
                 <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
@@ -427,7 +448,7 @@ const ASL = () => {
                     </Box>
                 </Stack>
             </div>                          
-        </div>
+        </Box>
     );
 };
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, TextField, Button, Rating, Typography, Card, CardContent, Avatar, Grid, Divider } from "@mui/material";
 import emailjs from '@emailjs/browser';
+import { useTheme } from '../context/ThemeContext';
 
 // Initialize EmailJS with your public key
 emailjs.init('5PI6GrT3XLTB3-n0M');
@@ -11,6 +12,7 @@ const Feedback = () => {
     const [email, setEmail] = useState("");
     const [sending, setSending] = useState(false);
     const [feedbacks, setFeedbacks] = useState([]);
+    const { fontStyle, fontSize } = useTheme();
 
     useEffect(() => {
         // Fetch existing feedbacks when component mounts
@@ -84,10 +86,10 @@ const Feedback = () => {
     };
 
     return (
-        <Box maxWidth="800px" mx="auto" p={3}>
+        <Box maxWidth="800px" mx="auto" p={3} sx={{ fontFamily: fontStyle }}>
             <Card variant="outlined" sx={{ mb: 4 }}>
                 <CardContent>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: `${parseInt(fontSize) + 4}px` }}>
                         Have a Feedback?
                     </Typography>
                     <Grid container spacing={2}>
@@ -100,7 +102,13 @@ const Feedback = () => {
                                 name="user_email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                sx={{ mb: 2 }}
+                                sx={{ 
+                                    mb: 2,
+                                    '& .MuiInputBase-input': {
+                                        fontFamily: fontStyle,
+                                        fontSize: `${fontSize}px`
+                                    }
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -113,6 +121,12 @@ const Feedback = () => {
                                 name="feedback_text"
                                 value={feedback}
                                 onChange={(e) => setFeedback(e.target.value)}
+                                sx={{
+                                    '& .MuiInputBase-input': {
+                                        fontFamily: fontStyle,
+                                        fontSize: `${fontSize}px`
+                                    }
+                                }}
                             />
                         </Grid>
                     </Grid>
@@ -124,10 +138,19 @@ const Feedback = () => {
                             onChange={(event, newValue) => {
                                 setRating(newValue);
                             }}
+                            sx={{ 
+                                '& .MuiRating-icon': {
+                                    fontSize: `${parseInt(fontSize) + 4}px`
+                                }
+                            }}
                         />
                         <Button
                             variant="contained"
-                            sx={{ ml: 2 }}
+                            sx={{ 
+                                ml: 2,
+                                fontFamily: fontStyle,
+                                fontSize: `${fontSize}px`
+                            }}
                             onClick={handleSubmit}
                             disabled={!feedback || !rating || !email || sending}
                         >
@@ -139,7 +162,7 @@ const Feedback = () => {
 
             <Box display="flex" alignItems="center" mb={2}>
                 <Divider sx={{ flexGrow: 1, mr: 2 }} />
-                <Typography variant="body2" color="textSecondary" sx={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+                <Typography variant="body2" color="textSecondary" sx={{ fontSize: `${fontSize}px`, fontFamily: fontStyle }}>
                     Recent Feedback
                 </Typography>
                 <Divider sx={{ flexGrow: 1, ml: 2 }} />
@@ -150,19 +173,28 @@ const Feedback = () => {
                     <Grid item xs={12} sm={6} key={index}>
                         <Card variant="outlined">
                             <CardContent>
-                                <Rating value={fb.rating} readOnly />
-                                <Typography variant="body1" mt={1}>
-                                    {fb.comment}
-                                </Typography>
-                                <Box display="flex" alignItems="center" mt={2}>
-                                    <Avatar>{fb.name[0]}</Avatar>
-                                    <Box ml={2}>
-                                        <Typography variant="subtitle2">{fb.name}</Typography>
-                                        <Typography variant="caption" color="textSecondary">
+                                <Box display="flex" alignItems="center" mb={1}>
+                                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                                        {fb.name ? fb.name[0] : 'A'}
+                                    </Avatar>
+                                    <Box>
+                                        <Typography variant="subtitle1" sx={{ fontSize: `${fontSize}px`, fontFamily: fontStyle }}>
+                                            {fb.name || "Anonymous User"}
+                                        </Typography>
+                                        <Typography variant="caption" color="textSecondary" sx={{ fontSize: `${parseInt(fontSize) - 2}px`, fontFamily: fontStyle }}>
                                             {fb.date}
                                         </Typography>
                                     </Box>
                                 </Box>
+                                <Typography sx={{ fontSize: `${fontSize}px`, fontFamily: fontStyle }}>
+                                    {fb.comment}
+                                </Typography>
+                                <Rating value={fb.rating} readOnly sx={{ 
+                                    mt: 1,
+                                    '& .MuiRating-icon': {
+                                        fontSize: `${parseInt(fontSize) + 2}px`
+                                    }
+                                }} />
                             </CardContent>
                         </Card>
                     </Grid>
