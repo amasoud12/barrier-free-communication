@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { Box, TextField, Button, Rating, Typography, Card, CardContent, Avatar, Grid, Divider } from "@mui/material";
+import emailjs from '@emailjs/browser';
+
+// Initialize EmailJS with your public key
+emailjs.init('5PI6GrT3XLTB3-n0M');
 
 const Feedback = () => {
     const [rating, setRating] = useState(0);
     const [feedback, setFeedback] = useState("");
+    const [email, setEmail] = useState("");
     const [sending, setSending] = useState(false);
     const [feedbacks, setFeedbacks] = useState([]);
 
@@ -28,6 +33,7 @@ const Feedback = () => {
     const handleSubmit = async () => {
         setSending(true);
         try {
+            // Send feedback to backend
             const response = await fetch('http://localhost:5000/send-feedback', {
                 method: 'POST',
                 headers: {
@@ -43,14 +49,33 @@ const Feedback = () => {
                 throw new Error('Failed to send feedback');
             }
 
+            // Send email using EmailJS
+            try {
+                await emailjs.send(
+                    'service_4q6568t',
+                    'template_66g1srd',
+                    {
+                        feedback_text: feedback,
+                        rating: rating,
+                        date: new Date().toLocaleString(),
+                        user_email: email
+                    },
+                    '5PI6GrT3XLTB3-n0M'
+                );
+            } catch (emailError) {
+                console.error('Error sending email:', emailError);
+                // Don't throw error here to keep the main functionality working
+            }
+
             const data = await response.json();
             
             // Update feedbacks list with the new feedback
-            await fetchFeedbacks(); // Fetch updated list from server
+            await fetchFeedbacks();
             
             alert("Feedback submitted successfully!");
             setFeedback("");
             setRating(0);
+            setEmail("");
         } catch (error) {
             console.error('Error sending feedback:', error);
             alert("Failed to send feedback. Please try again.");
@@ -69,10 +94,23 @@ const Feedback = () => {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
+                                type="email"
+                                variant="outlined"
+                                placeholder="Enter your email"
+                                name="user_email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
                                 multiline
                                 rows={2}
                                 variant="outlined"
                                 placeholder="Please share your feedback here!"
+                                name="feedback_text"
                                 value={feedback}
                                 onChange={(e) => setFeedback(e.target.value)}
                             />
@@ -91,7 +129,7 @@ const Feedback = () => {
                             variant="contained"
                             sx={{ ml: 2 }}
                             onClick={handleSubmit}
-                            disabled={!feedback || !rating || sending}
+                            disabled={!feedback || !rating || !email || sending}
                         >
                             {sending ? 'Sending...' : 'Submit'}
                         </Button>
