@@ -2,6 +2,7 @@
 import os
 import base64
 import tempfile
+import json
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -153,6 +154,70 @@ def transcribe():
         }), 200  # Send back a successful response
     
     return jsonify({'error': 'Request must be JSON'}), 400
+
+# Store feedback in a JSON file
+FEEDBACK_FILE = "feedbacks.json"
+
+def load_feedbacks():
+    if os.path.exists(FEEDBACK_FILE):
+        try:
+            with open(FEEDBACK_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return []
+    return []
+
+def save_feedbacks(feedbacks):
+    with open(FEEDBACK_FILE, 'w') as f:
+        json.dump(feedbacks, f)
+
+# Initialize feedbacks from file
+feedbacks = load_feedbacks()
+
+@app.route("/send-feedback", methods=["POST"])
+def send_feedback():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data received"}), 400
+
+        required_fields = ['feedback', 'rating']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        # Create new feedback entry
+        from datetime import datetime
+        new_feedback = {
+            "name": "Anonymous User",
+            "comment": data['feedback'],
+            "date": datetime.now().strftime("%m-%d-%Y"),
+            "rating": data['rating']
+        }
+        
+        # Load existing feedbacks
+        feedbacks = load_feedbacks()
+        
+        # Add to our feedbacks list
+        feedbacks.insert(0, new_feedback)  # Add to beginning of list
+        
+        # Save to file
+        save_feedbacks(feedbacks)
+        
+        return jsonify({
+            "message": "Feedback submitted successfully",
+            "feedback": new_feedback
+        }), 200
+    except Exception as e:
+        print(f"Error saving feedback: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/get-feedbacks", methods=["GET"])
+def get_feedbacks():
+    # Load feedbacks from file
+    feedbacks = load_feedbacks()
+    # Return only the 2 most recent feedbacks
+    return jsonify(feedbacks[:2]), 200
 
 def fetch_transcript_with_proxy(video_id):
     try:

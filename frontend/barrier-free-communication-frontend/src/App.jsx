@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from './components/Navbar/Navbar'
+import { Link } from 'react-router-dom'
 import UICustomization from './components/UICustomization'
 import VoiceCommand from './components/VoiceCommand'
 import Help from './components/Help'
@@ -9,6 +10,7 @@ import {Route, Routes} from 'react-router-dom'
 import ASL from './components/ASL'
 import { Typography } from '@mui/material'
 import YouTubeCaptionGenerator from './components/Youtube'
+import Feedback from './components/Feedback'
 import { ThemeProvider } from './context/ThemeContext'
 
 const App = () => {
@@ -27,12 +29,13 @@ const App = () => {
           <Route path='/faqs' element={<FAQ theme={theme} setTheme={setTheme}/>}/>
           <Route path='/audioASL' element={<ASL theme={theme} setTheme={setTheme}/>}/>
           <Route path='/youtube' element={<YouTubeCaptionGenerator theme={theme} setTheme={setTheme}/>}/>
+          <Route path='/feedback' element={<Feedback theme={theme} setTheme={setTheme}/>}/>
         </Routes>
 
         <div className='feedback'>
           {theme == 'light' && <h4 className='feedback-fb' style={{color: 'black'}}>Want to Provide feedback?</h4>}
           {theme == 'dark' && <h4 className='feedback-fb' style={{color: 'white'}}>Want to Provide feedback?</h4>}
-          <h4 className='feedback-ch'> Click Here</h4>
+          <Link to="/feedback" className='feedback-ch'>Click Here</Link>
         </div>
       </div>
     </ThemeProvider>
