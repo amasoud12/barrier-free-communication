@@ -12,33 +12,37 @@ import { Typography } from '@mui/material'
 import YouTubeCaptionGenerator from './components/Youtube'
 import Feedback from './components/Feedback'
 import { ThemeProvider } from './context/ThemeContext'
+import { LanguageProvider } from './context/LanguageContext'
+import { useTranslation } from 'react-i18next'
 
 const App = () => {
-
   const [theme, setTheme] = useState('light');
+  const { t } = useTranslation();
 
   return (
-    <ThemeProvider>
-      <div className={`container ${theme}`}>
-        <Navbar theme={theme} setTheme={setTheme}/>
-        <Routes>
-          <Route path='/' element={<Dashboard theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/ui' element={<UICustomization theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/voicecommand' element={<VoiceCommand theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/help' element={<Help theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/faqs' element={<FAQ theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/audioASL' element={<ASL theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/youtube' element={<YouTubeCaptionGenerator theme={theme} setTheme={setTheme}/>}/>
-          <Route path='/feedback' element={<Feedback theme={theme} setTheme={setTheme}/>}/>
-        </Routes>
+    <LanguageProvider>
+      <ThemeProvider>
+        <div className={`container ${theme}`}>
+          <Navbar theme={theme} setTheme={setTheme}/>
+          <Routes>
+            <Route path='/' element={<Dashboard theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/ui' element={<UICustomization theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/voicecommand' element={<VoiceCommand theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/help' element={<Help theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/faqs' element={<FAQ theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/audioASL' element={<ASL theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/youtube' element={<YouTubeCaptionGenerator theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/feedback' element={<Feedback theme={theme} setTheme={setTheme}/>}/>
+          </Routes>
 
-        <div className='feedback'>
-          {theme == 'light' && <h4 className='feedback-fb' style={{color: 'black'}}>Want to Provide feedback?</h4>}
-          {theme == 'dark' && <h4 className='feedback-fb' style={{color: 'white'}}>Want to Provide feedback?</h4>}
-          <Link to="/feedback" className='feedback-ch'>Click Here</Link>
+          <div className='feedback'>
+            {theme == 'light' && <h4 className='feedback-fb' style={{color: 'black'}}>{t('feedback')}</h4>}
+            {theme == 'dark' && <h4 className='feedback-fb' style={{color: 'white'}}>{t('feedback')}</h4>}
+            <Link to="/feedback" className='feedback-ch'>{t('click_here')}</Link>
+          </div>
         </div>
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </LanguageProvider>
   )
 }
 

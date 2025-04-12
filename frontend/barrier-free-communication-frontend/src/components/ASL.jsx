@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './ASL.css';
 import axios from "axios";
 import { io } from 'socket.io-client';
@@ -14,14 +14,17 @@ import MicNoneOutlinedIcon from '@mui/icons-material/MicNoneOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import UploadIcon from '@mui/icons-material/Upload';
 import Button from '@mui/material/Button';
-import { useEffect } from "react";
 import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import { useTheme } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../context/LanguageContext';
 
 const ASL = () => {
+    const { t } = useTranslation();
+    const { language } = useLanguage();
     const [inputValue, setInputValue] = useState('');
     const [transcribe, setTranscribeValue] = useState('');
     const [videoSrc, setVideoSrc] = useState('/assets/A.mp4');
@@ -48,6 +51,20 @@ const ASL = () => {
     const [ffmpeg] = useState(() => new FFmpeg());
     const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
     const { fontStyle, fontSize } = useTheme();
+
+    // Synchronize the transcription language with the app language
+    useEffect(() => {
+        // Map the language code to the language name used in the dropdown
+        const languageMap = {
+            'en': 'English',
+            'ar': 'Arabic',
+            'hi': 'Hindi'
+        };
+        
+        if (languageMap[language]) {
+            setSelectedOption(languageMap[language]);
+        }
+    }, [language]);
 
     useEffect(() => {
         // Connect to backend WebSocket for live transcription
@@ -356,7 +373,7 @@ const ASL = () => {
                 fontSize: `${fontSize}px`
             }
         }}>
-            <h1 style={{ textAlign: "center", marginTop: "20px" }}>Audio to ASL</h1>
+            <h1 style={{ textAlign: "center", marginTop: "20px" }}>{t('audio_to_asl')}</h1>
             <div>
                 <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
                     <Box sx={{ padding: 1, flex: 0.3 }}>
@@ -365,7 +382,7 @@ const ASL = () => {
                     <Box sx={{ padding: 1, flex: 0.3 }}>
                         <div>
                             <FormControl>
-                                <FormControlLabel value="consent" control={<Radio defaultChecked />} label="Allow the app to record audio?" />
+                                <FormControlLabel value="consent" control={<Radio defaultChecked />} label={t('allow_record')} />
                             </FormControl>
                         </div>
                         <div sx={{margin: "2px"}}>
@@ -375,37 +392,37 @@ const ASL = () => {
                             {fileUpload ? (
                                 <div className="audio-upload">
                                     <input type="file" accept=".wav" onChange={handleFileChange} />
-                                    <button className="custom-button" onClick={handleUpload}>Upload</button>
+                                    <button className="custom-button" onClick={handleUpload}>{t('uploading')}</button>
                                 </div>) : <div></div> 
                             }
                             <div>
-                                <h3>Transcription:</h3>
+                                <h3>{t('transcription')}</h3>
                                 <div>
                                     <p>{transcript}</p>
                                 </div>
                             </div>
                             <div>
-                                <h3>Which Language to Transcribe into:</h3>
+                                <h3>{t('translate_to')}</h3>
                                 <select value={selectedOption} onChange={handleChange}>
-                                    <option value="Select Option">Select One</option>
+                                    <option value="Select Option">{t('select_one')}</option>
                                     <option value="English">English</option>
-                                    <option value="Hindi">Hindi</option>
-                                    <option value="Arabic">Arabic</option>
+                                    <option value="Hindi">हिन्दी</option>
+                                    <option value="Arabic">العربية</option>
                                 </select>
 
-                                    <p>Selected Option: {selectedOption}</p>
+                                <p>{t('selected_option')}: {selectedOption}</p>
                             </div>
                             
                         </div>
 
                         <div>
                             <button className="card-button custom-button" onClick={fetchData}>
-                                View ASL
+                                {t('view_asl')}
                             </button>
                         </div>
                         <div>
                             <button className="card-button custom-button" onClick={fetchTranslatedData}>
-                                View Translation
+                                {t('view_translation')}
                             </button>
                         </div>
                     </Box>
@@ -427,7 +444,7 @@ const ASL = () => {
                                 </div>
                                 <div>
                                     <button className="card-button custom-button" onClick={handleDownloadASL} disabled={isLoading}>
-                                        {isLoading ? 'Downloading...' : 'Save ASL'}
+                                        {isLoading ? t('downloading') : t('save_asl')}
                                     </button>
                                 </div>
                             </div> :
@@ -440,7 +457,7 @@ const ASL = () => {
                             <div>
                                 <div>{transcribe}</div>
                                 <button className="card-button custom-button" onClick={handleDownloadTranscript}>
-                                    Save Translation
+                                    {t('save_translation')}
                                 </button>
                             </div> :
                             <div></div>

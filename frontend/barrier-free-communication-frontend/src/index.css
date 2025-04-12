@@ -1,3 +1,26 @@
+/* Add these RTL related styles at the top of the file */
+html[dir="rtl"] {
+  text-align: right;
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea {
+  text-align: right;
+}
+
+html[dir="rtl"] .MuiFormControl-root {
+  direction: rtl;
+}
+
+html[dir="rtl"] .navbar ul {
+  padding-right: 0;
+}
+
+html[dir="rtl"] .navbar ul li {
+  margin-left: 25px;
+  margin-right: 0;
+}
+
 *{
   margin: 0;
   padding: 0;
