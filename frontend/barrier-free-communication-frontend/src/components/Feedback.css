@@ -1,0 +1,88 @@
+/* RTL Support */
+html[dir="rtl"] .MuiInputBase-root {
+  text-align: right;
+}
+
+html[dir="rtl"] .MuiFormLabel-root {
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+html[dir="rtl"] .MuiButton-root {
+  margin-right: 16px;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .MuiGrid-container {
+  direction: rtl;
+}
+
+html[dir="rtl"] .MuiCard-root {
+  text-align: right;
+}
+
+html[dir="rtl"] .MuiCardContent-root {
+  text-align: right;
+}
+
+/* Feedback Card styles */
+.feedback-card {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark theme styles */
+.dark .feedback-card {
+  background-color: #333;
+  color: white;
+  border-color: #555;
+}
+
+.dark .MuiDivider-root {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .MuiInputBase-root {
+  background-color: #444;
+  color: white;
+}
+
+.dark .MuiInputBase-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dark .MuiTypography-colorTextSecondary {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.dark .MuiInputLabel-outlined {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.feedback-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .feedback-form {
+    padding: 15px;
+  }
+  
+  .feedback-card {
+    margin-bottom: 15px;
+  }
+} 

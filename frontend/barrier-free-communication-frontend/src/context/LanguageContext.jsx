@@ -70,7 +70,15 @@ i18n
           mode_switch_info: 'Switch to enable dark/light mode is placed on the top right corner',
           small: 'Small',
           medium: 'Medium',
-          large: 'Large'
+          large: 'Large',
+          // Feedback page translations
+          have_feedback: 'Have a Feedback?',
+          enter_email: 'Enter your email',
+          share_feedback: 'Please share your feedback here!',
+          sending: 'Sending...',
+          submit: 'Submit',
+          recent_feedback: 'Recent Feedback',
+          anonymous_user: 'Anonymous User'
         }
       },
       ar: {
@@ -124,7 +132,15 @@ i18n
           mode_switch_info: 'مفتاح تمكين الوضع الداكن/الفاتح موجود في الزاوية العلوية اليمنى',
           small: 'صغير',
           medium: 'متوسط',
-          large: 'كبير'
+          large: 'كبير',
+          // Feedback page translations
+          have_feedback: 'هل لديك ملاحظات؟',
+          enter_email: 'أدخل بريدك الإلكتروني',
+          share_feedback: 'يرجى مشاركة ملاحظاتك هنا!',
+          sending: 'جاري الإرسال...',
+          submit: 'إرسال',
+          recent_feedback: 'الملاحظات الأخيرة',
+          anonymous_user: 'مستخدم مجهول'
         }
       },
       hi: {
@@ -178,7 +194,15 @@ i18n
           mode_switch_info: 'डार्क/लाइट मोड को सक्षम करने के लिए स्विच ऊपरी दाईं कोने पर है',
           small: 'छोटा',
           medium: 'मध्यम',
-          large: 'बड़ा'
+          large: 'बड़ा',
+          // Feedback page translations
+          have_feedback: 'प्रतिक्रिया है?',
+          enter_email: 'अपना ईमेल दर्ज करें',
+          share_feedback: 'कृपया अपनी प्रतिक्रिया यहां साझा करें!',
+          sending: 'भेज रहा है...',
+          submit: 'जमा करें',
+          recent_feedback: 'हाल की प्रतिक्रियाएँ',
+          anonymous_user: 'अज्ञात उपयोगकर्ता'
         }
       }
     }
