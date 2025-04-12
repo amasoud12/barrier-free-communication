@@ -1,0 +1,58 @@
+/* RTL Support */
+html[dir="rtl"] .MuiSelect-select {
+  text-align: right;
+}
+
+html[dir="rtl"] .MuiInputLabel-root {
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+html[dir="rtl"] .MuiFormControl-root {
+  text-align: right;
+}
+
+html[dir="rtl"] .MuiMenuItem-root {
+  justify-content: flex-end;
+}
+
+/* UI Customization styles */
+.ui-box {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ui-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark theme styles */
+.dark .ui-box {
+  background-color: #333;
+  color: white;
+  border-color: #555;
+}
+
+.dark .MuiInputLabel-root {
+  color: white;
+}
+
+.dark .MuiOutlinedInput-root {
+  background-color: #444;
+  color: white;
+}
+
+.dark .MuiOutlinedInput-notchedOutline {
+  border-color: #666;
+}
+
+.dark .MuiSelect-icon {
+  color: white;
+}
+
+.dark .MuiMenuItem-root {
+  color: black;
+} 

@@ -57,7 +57,20 @@ i18n
           save_captions: 'Save Captions',
           barrier_free_youtube: 'Barrier Free Communication - YouTube Captions',
           video_url: 'Video URL:',
-          generated_on: 'Generated on:'
+          generated_on: 'Generated on:',
+          // UI Customization page translations
+          general_ui_customization: 'General UI Customization',
+          font_style: 'Font Style',
+          select_font_style: 'Select Font Style',
+          font_size: 'Font Size',
+          select_font_size: 'Select Font Size',
+          button_icon_size: 'Button & Icon Size',
+          select_button_size: 'Select Button Size',
+          dark_light_mode: 'Dark/Light Mode',
+          mode_switch_info: 'Switch to enable dark/light mode is placed on the top right corner',
+          small: 'Small',
+          medium: 'Medium',
+          large: 'Large'
         }
       },
       ar: {
@@ -98,7 +111,20 @@ i18n
           save_captions: 'حفظ التسميات التوضيحية',
           barrier_free_youtube: 'تواصل بدون حواجز - تسميات يوتيوب',
           video_url: 'رابط الفيديو:',
-          generated_on: 'تم الإنشاء في:'
+          generated_on: 'تم الإنشاء في:',
+          // UI Customization page translations
+          general_ui_customization: 'التخصيص العام لواجهة المستخدم',
+          font_style: 'نمط الخط',
+          select_font_style: 'اختر نمط الخط',
+          font_size: 'حجم الخط',
+          select_font_size: 'اختر حجم الخط',
+          button_icon_size: 'حجم الأزرار والأيقونات',
+          select_button_size: 'اختر حجم الزر',
+          dark_light_mode: 'الوضع الداكن/الفاتح',
+          mode_switch_info: 'مفتاح تمكين الوضع الداكن/الفاتح موجود في الزاوية العلوية اليمنى',
+          small: 'صغير',
+          medium: 'متوسط',
+          large: 'كبير'
         }
       },
       hi: {
@@ -139,7 +165,20 @@ i18n
           save_captions: 'कैप्शन सहेजें',
           barrier_free_youtube: 'बाधा मुक्त संचार - यूट्यूब कैप्शन',
           video_url: 'वीडियो URL:',
-          generated_on: 'इस तारीख को बनाया गया:'
+          generated_on: 'इस तारीख को बनाया गया:',
+          // UI Customization page translations
+          general_ui_customization: 'सामान्य यूआई अनुकूलन',
+          font_style: 'फ़ॉन्ट शैली',
+          select_font_style: 'फ़ॉन्ट शैली चुनें',
+          font_size: 'फ़ॉन्ट आकार',
+          select_font_size: 'फ़ॉन्ट आकार चुनें',
+          button_icon_size: 'बटन और आइकन आकार',
+          select_button_size: 'बटन आकार चुनें',
+          dark_light_mode: 'डार्क/लाइट मोड',
+          mode_switch_info: 'डार्क/लाइट मोड को सक्षम करने के लिए स्विच ऊपरी दाईं कोने पर है',
+          small: 'छोटा',
+          medium: 'मध्यम',
+          large: 'बड़ा'
         }
       }
     }

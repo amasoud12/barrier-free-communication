@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLanguage } from './LanguageContext';
 
 const ThemeContext = createContext();
 
@@ -6,6 +7,18 @@ export const ThemeProvider = ({ children }) => {
   const [fontStyle, setFontStyle] = useState('Times New Roman');
   const [fontSize, setFontSize] = useState('20');
   const [buttonSize, setButtonSize] = useState('medium');
+  const { language } = useLanguage ? useLanguage() : { language: 'en' };
+
+  // Set default font based on language if no font has been selected yet
+  useEffect(() => {
+    if (fontStyle === 'Times New Roman') {
+      if (language === 'ar') {
+        setFontStyle('Noto Sans Arabic');
+      } else if (language === 'hi') {
+        setFontStyle('Noto Sans Devanagari');
+      }
+    }
+  }, [language, fontStyle]);
 
   const updateFontStyle = (newStyle) => {
     setFontStyle(newStyle);
@@ -64,6 +77,11 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     updateButtonSize(buttonSize);
   }, []);
+
+  // Apply font style when it changes
+  useEffect(() => {
+    document.body.style.fontFamily = fontStyle;
+  }, [fontStyle]);
 
   return (
     <ThemeContext.Provider value={{ 

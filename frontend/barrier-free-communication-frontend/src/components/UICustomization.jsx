@@ -7,10 +7,19 @@ import Select from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../context/LanguageContext';
+import './UICustomization.css';
 
-const UICustomization = () => {
+const UICustomization = ({ theme }) => {
   const { fontStyle, fontSize, buttonSize, updateFontStyle, updateFontSize, updateButtonSize } = useTheme();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   const [selectedValue, setSelectedValue] = useState("a"); // Tracks Radio Selection
+  
+  // Set text direction based on language
+  const isRTL = language === 'ar';
+  const textDirection = isRTL ? 'rtl' : 'ltr';
   
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
@@ -37,18 +46,19 @@ const UICustomization = () => {
   });
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center", marginTop: "20px" }}>General UI Customization</h1>
-      <Stack direction="row" spacing={3} justifyContent="center" margin={5}>
-        <Box sx={{ border: 1, padding: 2, textAlign: "center", flex: 1 }}>
-          <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px"  }}>Font Style</h3>
-          <FormControl>
-            <InputLabel id="demo-simple-select-autowidth-label">Select Font Style</InputLabel>
+    <div style={{ direction: textDirection }} className={theme === 'dark' ? 'dark' : ''}>
+      <h1 style={{ textAlign: "center", marginTop: "20px" }}>{t('general_ui_customization')}</h1>
+      <Stack direction={isRTL ? "row-reverse" : "row"} spacing={3} justifyContent="center" margin={5}>
+        <Box sx={{ border: 1, padding: 2, textAlign: isRTL ? "right" : "center", flex: 1 }} className="ui-box">
+          <h3 style={{ textAlign: isRTL ? "right" : "center", marginTop: "20px", marginBottom: "20px" }}>{t('font_style')}</h3>
+          <FormControl fullWidth>
+            <InputLabel id="font-style-label">{t('select_font_style')}</InputLabel>
             <Select
-              sx = {{ width: 300}}
-              id="demo-simple-select-autowidth"
+              sx={{ width: 300, textAlign: isRTL ? "right" : "left" }}
+              id="font-style-select"
+              labelId="font-style-label"
               autoWidth
-              label="FontStyle"
+              label={t('select_font_style')}
               value={fontStyle}
               onChange={handleFontChange}
             >
@@ -57,19 +67,22 @@ const UICustomization = () => {
               <MenuItem value="Courier New">Courier New</MenuItem>
               <MenuItem value="Verdana">Verdana</MenuItem>
               <MenuItem value="Georgia">Georgia</MenuItem>
+              {isRTL && <MenuItem value="Noto Sans Arabic">Noto Sans Arabic</MenuItem>}
+              {language === 'hi' && <MenuItem value="Noto Sans Devanagari">Noto Sans Devanagari</MenuItem>}
             </Select>
           </FormControl>
         </Box>
 
-        <Box sx={{ border: 1, padding: 2, textAlign: "center", flex: 1 }}>
-          <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px"  }}>Font Size</h3>
-          <FormControl>
-            <InputLabel id="demo-simple-select-autowidth-label">Select Font Size</InputLabel>
+        <Box sx={{ border: 1, padding: 2, textAlign: isRTL ? "right" : "center", flex: 1 }} className="ui-box">
+          <h3 style={{ textAlign: isRTL ? "right" : "center", marginTop: "20px", marginBottom: "20px" }}>{t('font_size')}</h3>
+          <FormControl fullWidth>
+            <InputLabel id="font-size-label">{t('select_font_size')}</InputLabel>
             <Select
-              sx = {{ width: 300}}
-              id="demo-simple-select-autowidth"
+              sx={{ width: 300, textAlign: isRTL ? "right" : "left" }}
+              id="font-size-select"
+              labelId="font-size-label"
               autoWidth
-              label="FontSize"
+              label={t('select_font_size')}
               value={fontSize}
               onChange={handleSizeChange}
             >
@@ -83,28 +96,29 @@ const UICustomization = () => {
           </FormControl>
         </Box>
 
-        <Box sx={{ border: 1, padding: 2, textAlign: "center", flex: 1 }}>
-          <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px"  }}>Button & Icon Size</h3>
-          <FormControl>
-            <InputLabel id="button-size-label">Select Button Size</InputLabel>
+        <Box sx={{ border: 1, padding: 2, textAlign: isRTL ? "right" : "center", flex: 1 }} className="ui-box">
+          <h3 style={{ textAlign: isRTL ? "right" : "center", marginTop: "20px", marginBottom: "20px" }}>{t('button_icon_size')}</h3>
+          <FormControl fullWidth>
+            <InputLabel id="button-size-label">{t('select_button_size')}</InputLabel>
             <Select
-              sx = {{ width: 300}}
+              sx={{ width: 300, textAlign: isRTL ? "right" : "left" }}
               id="button-size-select"
+              labelId="button-size-label"
               autoWidth
-              label="ButtonSize"
+              label={t('select_button_size')}
               value={buttonSize}
               onChange={handleButtonSizeChange}
             >
-              <MenuItem value="small">Small</MenuItem>
-              <MenuItem value="medium">Medium</MenuItem>
-              <MenuItem value="large">Large</MenuItem>
+              <MenuItem value="small">{t('small')}</MenuItem>
+              <MenuItem value="medium">{t('medium')}</MenuItem>
+              <MenuItem value="large">{t('large')}</MenuItem>
             </Select>
           </FormControl>
         </Box>
 
-        <Box sx={{ border: 1, padding: 2, textAlign: "center", flex: 1 }}>
-          <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px"  }}>Dark/Light Mode</h3>
-          <Typography>Switch to enable dark/light mode is placed on the top right corner</Typography>
+        <Box sx={{ border: 1, padding: 2, textAlign: isRTL ? "right" : "center", flex: 1 }} className="ui-box">
+          <h3 style={{ textAlign: isRTL ? "right" : "center", marginTop: "20px", marginBottom: "20px" }}>{t('dark_light_mode')}</h3>
+          <Typography style={{ textAlign: isRTL ? "right" : "center" }}>{t('mode_switch_info')}</Typography>
         </Box>
       </Stack>
     </div>
