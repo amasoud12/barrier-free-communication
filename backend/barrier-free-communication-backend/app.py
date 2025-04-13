@@ -219,24 +219,13 @@ def get_feedbacks():
     # Return only the 2 most recent feedbacks
     return jsonify(feedbacks[:2]), 200
 
-def fetch_transcript_with_proxy(video_id, target_lang='en'):
+def fetch_transcript_with_proxy(video_id):
     try:
         # Fetch the transcript using the proxy configuration
         fetched_transcript = YouTubeTranscriptApi.get_transcript(video_id, proxies=proxy_config)
 
         captions = [snippet['text'] for snippet in fetched_transcript]
         formatted_captions = '\n'.join(captions)
-        
-        # If target language is not English, translate the captions
-        if target_lang != 'en':
-            try:
-                translator = GoogleTranslator(source='auto', target=target_lang)
-                formatted_captions = translator.translate(formatted_captions)
-            except Exception as e:
-                print(f"Translation error: {str(e)}")
-                # Continue with original captions if translation fails
-                pass
-
         return {"captions": formatted_captions}, 200
 
     except Exception as e:
@@ -246,17 +235,6 @@ def fetch_transcript_with_proxy(video_id, target_lang='en'):
 def generate_captions():
     data = request.get_json()
     youtube_url = data.get('youtube_url')
-    target_lang = data.get('target_lang', 'en')  # Default to English if not specified
-    
-    # Convert language code if needed
-    lang_map = {
-        'hi': 'hi',
-        'ar': 'ar',
-        'en': 'en'
-    }
-    
-    target_lang = lang_map.get(target_lang, 'en')
-
     if not youtube_url or 'v=' not in youtube_url:
         return jsonify({"error": "Invalid or missing YouTube URL"}), 400
 
@@ -267,7 +245,7 @@ def generate_captions():
     if not video_id:
         return jsonify({"error": "Invalid YouTube URL"}), 400
 
-    response, status_code = fetch_transcript_with_proxy(video_id, target_lang)
+    response, status_code = fetch_transcript_with_proxy(video_id)
     return jsonify(response), status_code
 
 # Main function to run the app
