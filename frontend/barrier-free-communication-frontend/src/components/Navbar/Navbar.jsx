@@ -49,6 +49,7 @@ const Navbar = ({theme, setTheme}) => {
                     <Select
                         value={language}
                         onChange={handleLanguageChange}
+                        className="language-select"
                         sx={{
                             height: '35px',
                             color: theme === 'dark' ? 'white' : 'black',
@@ -67,12 +68,12 @@ const Navbar = ({theme, setTheme}) => {
                         <MenuItem value="ar">العربية</MenuItem>
                         <MenuItem value="hi">हिन्दी</MenuItem>
                     </Select>
-                </FormControl>
-                {theme == 'light' && <LiaToggleOffSolid className = 'toggle' onClick={()=>{toggle_mode()}}/>}
-                {theme == 'dark' && <LiaToggleOnSolid className = 'toggle' onClick={()=>{toggle_mode()}}/>}
+                    </FormControl>
+                        <div className="theme-switch" onClick={toggle_mode}>
+                        {theme === 'light' ? <LiaToggleOffSolid className='toggle' /> : <LiaToggleOnSolid className='toggle' />}
+                        </div>
             </div>
         </div>
-    )
-}
-
+    );
+};
 export default Navbar

@@ -21,6 +21,7 @@ import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../context/LanguageContext';
+import Joyride from 'react-joyride';
 
 const ASL = () => {
     const { t } = useTranslation();
@@ -51,6 +52,44 @@ const ASL = () => {
     const [ffmpeg] = useState(() => new FFmpeg());
     const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
     const { fontStyle, fontSize } = useTheme();
+    const [runTutorial, setRunTutorial] = useState(true);
+    const [run, setRun] = useState(true); // Start tutorial on load
+    const [steps, setSteps] = useState([
+        {
+            target: '.record-audio',
+            content: 'Click here to record a live message. Note: this will turn your microphone on.',
+            placement: 'bottom',
+        },
+        {
+            target: '.audio-upload',
+            content: 'Click here to upload a .WAV audio file.',
+            placement: 'bottom',
+        },
+        {
+            target: '.select-translation',
+            content: 'Choose the language you want to translate the text into.',
+            placement: 'bottom',
+        },
+        {
+            target: '.view-asl',
+            content: 'Click to view the ASL translation for the text.',
+            placement: 'bottom',
+        },
+        {
+            target: '.view-translation',
+            content: 'Click here to view the translation of the audio.',
+            placement: 'bottom',
+        },
+    ]);
+    
+    const handleJoyrideCallback = (data) => {
+        const { status, type } = data;
+    
+        // Stop tutorial if finished or skipped
+        if ([status.FINISHED, status.SKIPPED].includes(status)) {
+          setRun(false); 
+        }
+      };
 
     // Synchronize the transcription language with the app language
     useEffect(() => {
@@ -350,123 +389,137 @@ const ASL = () => {
 
       };
 
-
-    return (
-        <Box sx={{ 
-            width: '100%', 
-            minHeight: '100vh', 
-            fontFamily: fontStyle,
-            '& .MuiTypography-root': {
-                fontFamily: fontStyle,
-                fontSize: `${fontSize}px`
-            },
-            '& .MuiButton-root': {
-                fontFamily: fontStyle,
-                fontSize: `${fontSize}px`
-            },
-            '& .MuiFormLabel-root': {
-                fontFamily: fontStyle,
-                fontSize: `${fontSize}px`
-            },
-            '& .MuiFormControlLabel-label': {
-                fontFamily: fontStyle,
-                fontSize: `${fontSize}px`
-            }
-        }}>
-            <h1 style={{ textAlign: "center", marginTop: "20px" }}>{t('audio_to_asl')}</h1>
-            <div>
-                <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
-                    <Box sx={{ padding: 1, flex: 0.3 }}>
-                        <img src={AudiotoASL} alt='no image' style={{ height: "300px", width: "400px" }}/>
-                    </Box>
-                    <Box sx={{ padding: 1, flex: 0.3 }}>
-                        <div>
-                            <FormControl>
-                                <FormControlLabel value="consent" control={<Radio defaultChecked />} label={t('allow_record')} />
-                            </FormControl>
-                        </div>
-                        <div sx={{margin: "2px"}}>
-                            <MicNoneOutlinedIcon color="black" fontSize="large" style={{marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick}/>
-                            <FileUploadOutlinedIcon color="black" fontSize="large" style={{cursor: "pointer"}} onClick={handleUploadClick}/>    
-                        
-                            {fileUpload ? (
-                                <div className="audio-upload">
-                                    <input type="file" accept=".wav" onChange={handleFileChange} />
-                                    <button className="custom-button" onClick={handleUpload}>{t('uploading')}</button>
-                                </div>) : <div></div> 
-                            }
-                            <div>
-                                <h3>{t('transcription')}</h3>
+        return (
+            <>
+                {/* Trigger the Joyride tutorial */}
+                {runTutorial && (
+                    <Joyride
+                        steps={steps}
+                        run={run}
+                        callback={handleJoyrideCallback}
+                        showSkipButton
+                        showProgress
+                        continuous
+                        styles={{
+                            options: {
+                                zIndex: 10000,
+                                primaryColor: '#1976d2',
+                            },
+                        }}
+                    />
+                )}
+        
+                <Box sx={{ 
+                    width: '100%', 
+                    minHeight: '100vh', 
+                    fontFamily: fontStyle,
+                    '& .MuiTypography-root': {
+                        fontFamily: fontStyle,
+                        fontSize: `${fontSize}px`
+                    },
+                    '& .MuiButton-root': {
+                        fontFamily: fontStyle,
+                        fontSize: `${fontSize}px`
+                    },
+                    '& .MuiFormLabel-root': {
+                        fontFamily: fontStyle,
+                        fontSize: `${fontSize}px`
+                    },
+                    '& .MuiFormControlLabel-label': {
+                        fontFamily: fontStyle,
+                        fontSize: `${fontSize}px`
+                    }
+                }}>
+                    <h1 style={{ textAlign: "center", marginTop: "20px" }}>{t('audio_to_asl')}</h1>
+                    <div>
+                        <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
+                            <Box sx={{ padding: 1, flex: 0.3 }}>
+                                <img src={AudiotoASL} alt='no image' style={{ height: "300px", width: "400px" }} />
+                            </Box>
+                            <Box sx={{ padding: 1, flex: 0.3 }}>
                                 <div>
-                                    <p>{transcript}</p>
+                                    <FormControl>
+                                        <FormControlLabel value="consent" control={<Radio defaultChecked />} label={t('allow_record')} />
+                                    </FormControl>
                                 </div>
-                            </div>
-                            <div>
-                                <h3>{t('translate_to')}</h3>
-                                <select value={selectedOption} onChange={handleChange}>
-                                    <option value="Select Option">{t('select_one')}</option>
-                                    <option value="English">English</option>
-                                    <option value="Hindi">हिन्दी</option>
-                                    <option value="Arabic">العربية</option>
-                                </select>
-
-                                <p>{t('selected_option')}: {selectedOption}</p>
-                            </div>
-                            
-                        </div>
-
-                        <div>
-                            <button className="card-button custom-button" onClick={fetchData}>
-                                {t('view_asl')}
-                            </button>
-                        </div>
-                        <div>
-                            <button className="card-button custom-button" onClick={fetchTranslatedData}>
-                                {t('view_translation')}
-                            </button>
-                        </div>
-                    </Box>
-                    <Box sx={{ padding: 1, flex: 0.3}}>
-                        {ASLflag && downloadASLFlag ? 
-                            <div sx={{margin: "2px"}}>
-                                <div>
-                                    <video
-                                        ref={videoRef}
-                                        width="400"
-                                        height="250"
-                                        onEnded={handleVideoEnd}
-                                        onLoadedData={handleLoadedData}
-                                        autoPlay
-                                    >
-                                        <source src={videoSrc} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
+                                <div sx={{ margin: "2px" }}>
+                                    <MicNoneOutlinedIcon className="record-audio" color="black" fontSize="large" style={{ marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick} />
+                                    <FileUploadOutlinedIcon className="audio-upload" color="black" fontSize="large" style={{ cursor: "pointer" }} onClick={handleUploadClick} />
+        
+                                    {fileUpload ? (
+                                        <div className="audio-upload">
+                                            <input type="file" accept=".wav" onChange={handleFileChange} />
+                                            <button className="custom-button" onClick={handleUpload}>{t('upload')}</button>
+                                        </div>) : null}
+        
+                                    <div>
+                                        <h3>{t('transcription')}</h3>
+                                        <div>
+                                            <p>{transcript}</p>
+                                        </div>
+                                    </div>
+        
+                                    <div>
+                                        <h3>{t('translate_to')}</h3>
+                                        <select className="select-translation" value={selectedOption} onChange={handleChange}>
+                                            <option value="Select Option">{t('select_one')}</option>
+                                            <option value="English">English</option>
+                                            <option value="Hindi">हिन्दी</option>
+                                            <option value="Arabic">العربية</option>
+                                        </select>
+        
+                                        <p>{t('selected_option')} {selectedOption}</p>
+                                    </div>
                                 </div>
+        
                                 <div>
-                                    <button className="card-button custom-button" onClick={handleDownloadASL} disabled={isLoading}>
-                                        {isLoading ? t('downloading') : t('save_asl')}
+                                    <button className="card-button custom-button view-asl" onClick={fetchData}>
+                                        {t('view_asl')}
                                     </button>
                                 </div>
-                            </div> :
-                            <div></div>
-                        }
-
-              
-
-                        { transcriptionFlag && downloadTranslationFlag ? 
-                            <div>
-                                <div>{transcribe}</div>
-                                <button className="card-button custom-button" onClick={handleDownloadTranscript}>
-                                    {t('save_translation')}
-                                </button>
-                            </div> :
-                            <div></div>
-                        }
-                    </Box>
-                </Stack>
-            </div>                          
-        </Box>
-    );
+                                <div>
+                                    <button className="card-button custom-button view-translation" onClick={fetchTranslatedData}>
+                                        {t('view_translation')}
+                                    </button>
+                                </div>
+                            </Box>
+                            <Box sx={{ padding: 1, flex: 0.3 }}>
+                                {ASLflag && downloadASLFlag ?
+                                    <div sx={{ margin: "2px" }}>
+                                        <div>
+                                            <video
+                                                ref={videoRef}
+                                                width="400"
+                                                height="250"
+                                                onEnded={handleVideoEnd}
+                                                onLoadedData={handleLoadedData}
+                                                autoPlay
+                                            >
+                                                <source src={videoSrc} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                        <div>
+                                            <button className="card-button custom-button save-asl" onClick={handleDownloadASL} disabled={isLoading}>
+                                                {isLoading ? t('downloading') : t('save_asl')}
+                                            </button>
+                                        </div>
+                                    </div> : null}
+        
+                                {transcriptionFlag && downloadTranslationFlag ?
+                                    <div>
+                                        <div>{transcribe}</div>
+                                        <button className="card-button custom-button save-translation" onClick={handleDownloadTranscript}>
+                                            {t('save_translation')}
+                                        </button>
+                                    </div> : null}
+                            </Box>
+                        </Stack>
+                    </div>
+                </Box>
+            </>
+        );
+        
 };
 
 export default ASL;

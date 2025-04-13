@@ -1,25 +1,40 @@
 // src/components/Youtube.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Box, Container, Stack, Typography, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Box, Stack, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import captioningImage from '/assets/Captioning.png';
 import jsPDF from 'jspdf';
 import './Youtube.css';
+import Joyride from 'react-joyride';
 import { useTranslation } from 'react-i18next';
-import { useLanguage } from '../context/LanguageContext';
 
 function YouTubeCaptionGenerator({ theme }) {
   const { t } = useTranslation();
-  const { language } = useLanguage();
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [captions, setCaptions] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [fileType, setFileType] = useState('txt');
-  
-  // Set text direction based on language
-  const isRTL = language === 'ar';
-  const textDirection = isRTL ? 'rtl' : 'ltr';
+  const [runTutorial, setRunTutorial] = useState(true);
+  const [run, setRun] = useState(true);
+
+  const [steps, setSteps] = useState([
+    {
+      target: '#youtube-url',
+      content: 'Paste the YouTube video URL here.',
+    },
+    {
+      target: '#generate-btn',
+      content: 'Click this button to generate captions for the video.',
+    },
+  ]);
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if (['finished', 'skipped'].includes(status)) {
+      setRun(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,10 +43,8 @@ function YouTubeCaptionGenerator({ theme }) {
     setIsLoading(true);
 
     try {
-      // Using the proxy configured in vite.config.js
       const response = await axios.post('http://127.0.0.1:5000/generate-captions', {
         youtube_url: youtubeUrl,
-        target_lang: language // Send the current UI language to get captions in the same language
       });
       setCaptions(response.data.captions);
     } catch (err) {
@@ -47,14 +60,15 @@ function YouTubeCaptionGenerator({ theme }) {
 
   const handleSaveCaptions = () => {
     if (!captions) return;
-    
-    const header = t('barrier_free_youtube') + "\n" +
-                  "===============================================\n" +
-                  `${t('video_url')} ${youtubeUrl}\n` +
-                  `${t('generated_on')} ${new Date().toLocaleString()}\n\n`;
-    
+
+    const header =
+      "Barrier Free Communication - YouTube Captions\n" +
+      "===============================================\n" +
+      `Video URL: ${youtubeUrl}\n` +
+      `Generated on: ${new Date().toLocaleString()}\n\n`;
+
     const contentWithHeader = header + captions;
-    
+
     switch (fileType) {
       case 'txt':
         downloadTextFile(contentWithHeader);
@@ -63,8 +77,6 @@ function YouTubeCaptionGenerator({ theme }) {
         downloadPdfFile(contentWithHeader);
         break;
       case 'docx':
-        // In a real application, you'd use a library like docx.js
-        // For this demo, we'll just show a message that docx is not supported
         alert('DOCX format support requires additional libraries. Downloading as TXT instead.');
         downloadTextFile(contentWithHeader);
         break;
@@ -75,7 +87,7 @@ function YouTubeCaptionGenerator({ theme }) {
 
   const downloadTextFile = (content) => {
     const element = document.createElement("a");
-    const file = new Blob([content], {type: 'text/plain'});
+    const file = new Blob([content], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
     element.download = "barrier-free-communication-captions.txt";
     document.body.appendChild(element);
@@ -85,40 +97,44 @@ function YouTubeCaptionGenerator({ theme }) {
 
   const downloadPdfFile = (content) => {
     const doc = new jsPDF();
-    
-    // Handle RTL text in PDF if Arabic is selected
-    if (language === 'ar') {
-      doc.setR2L(true);
-    }
-    
-    // Add title
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
-    doc.text(t('barrier_free_youtube'), 20, 20);
-    
-    // Add horizontal line
+    doc.text("Barrier Free Communication - YouTube Captions", 20, 20);
     doc.setLineWidth(0.5);
     doc.line(20, 25, 190, 25);
-    
-    // Add video URL and date
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    doc.text(`${t('video_url')} ${youtubeUrl}`, 20, 35);
-    doc.text(`${t('generated_on')} ${new Date().toLocaleString()}`, 20, 45);
-    
-    // Add captions with word wrapping
+    doc.text(`Video URL: ${youtubeUrl}`, 20, 35);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 45);
     doc.setFontSize(11);
     const splitText = doc.splitTextToSize(captions, 170);
     doc.text(splitText, 20, 60);
-    
-    // Save the PDF
     doc.save("barrier-free-communication-captions.pdf");
   };
 
   return (
-    <div className={`youtube-container ${theme === 'dark' ? 'dark' : ''}`} style={{ direction: textDirection }}>
+    <div className={`youtube-container ${theme === 'dark' ? 'dark' : ''}`}>
+
+      {/* Trigger the Joyride tutorial */}
+      {runTutorial && (
+        <Joyride
+          steps={steps}
+          run={run}
+          callback={handleJoyrideCallback}
+          showSkipButton
+          showProgress
+          continuous
+          styles={{
+            options: {
+              zIndex: 10000,
+              primaryColor: '#1976d2',
+            },
+          }}
+        />
+      )}
+
       <h1 className="youtube-title">{t('social_media_captioning')}</h1>
-      
+
       <div>
         <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
           <Box sx={{ padding: 1, flex: 0.3 }}>
@@ -128,20 +144,14 @@ function YouTubeCaptionGenerator({ theme }) {
               style={{ height: "300px", width: "400px" }}
             />
           </Box>
-          
+
           <Box sx={{ padding: 1, flex: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div className="youtube-form-container">
-              <form onSubmit={handleSubmit} style={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: isRTL ? 'flex-end' : 'flex-start', 
-                textAlign: isRTL ? 'right' : 'left',
-                width: '100%'
-              }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <label htmlFor="youtube-url" className="youtube-label">
                   {t('youtube_label')}
                 </label>
-                
+
                 <input
                   id="youtube-url"
                   type="text"
@@ -149,45 +159,29 @@ function YouTubeCaptionGenerator({ theme }) {
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   className="youtube-input"
-                  style={{ 
-                    textAlign: isRTL ? 'right' : 'left',
-                    direction: textDirection,
-                    width: '100%'
-                  }}
                 />
-                
+
                 <button 
+                  id="generate-btn"
                   type="submit" 
-                  className="youtube-button custom-button"
+                  className="card-button custom-button youtube-button"
                   disabled={isLoading}
                 >
                   {isLoading ? t('generating') : t('generate_caption')}
                 </button>
               </form>
             </div>
-            
+
             {error && <p className="youtube-error">{error}</p>}
-            
+
             {captions && (
-              <div className="youtube-captions-container" style={{ 
-                textAlign: isRTL ? 'right' : 'left',
-                direction: textDirection
-              }}>
+              <div className="youtube-captions-container">
                 <h2>{t('generated_captions')}</h2>
-                <div className="youtube-captions" style={{ 
-                  textAlign: isRTL ? 'right' : 'left',
-                  direction: textDirection
-                }}>
+                <div className="youtube-captions">
                   {captions}
                 </div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  marginTop: '15px', 
-                  gap: '10px',
-                  flexDirection: isRTL ? 'row-reverse' : 'row'
-                }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: '10px' }}>
                   <FormControl sx={{ minWidth: 120 }} size="small">
                     <InputLabel id="file-type-label">{t('file_type')}</InputLabel>
                     <Select
@@ -203,10 +197,11 @@ function YouTubeCaptionGenerator({ theme }) {
                       <MenuItem value="docx">DOCX</MenuItem>
                     </Select>
                   </FormControl>
-                  
+
                   <button 
+                    id="save-btn"
                     onClick={handleSaveCaptions}
-                    className="youtube-button custom-button"
+                    className="youtube-button"
                   >
                     {t('save_captions')}
                   </button>

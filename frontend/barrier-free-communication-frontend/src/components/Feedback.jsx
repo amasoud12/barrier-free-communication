@@ -171,6 +171,7 @@ const Feedback = ({ theme }) => {
                         />
                         <Button
                             variant="contained"
+                            className="feedback-button"
                             sx={{ 
                                 ml: isRTL ? 0 : 2,
                                 mr: isRTL ? 2 : 0,
@@ -201,7 +202,7 @@ const Feedback = ({ theme }) => {
             <Grid container spacing={2} direction={isRTL ? 'row-reverse' : 'row'}>
                 {feedbacks.slice(0, 2).map((fb, index) => (
                     <Grid item xs={12} sm={6} key={index}>
-                        <Card variant="outlined" className="feedback-card">
+                        <Card variant="outlined">
                             <CardContent>
                                 <Box display="flex" alignItems="center" mb={1} flexDirection={isRTL ? 'row-reverse' : 'row'}>
                                     <Avatar sx={{ 
