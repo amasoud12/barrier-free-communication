@@ -88,6 +88,9 @@ const Help = () => {
                 borderLeft: '5px solid #61a9bd',
                 borderRadius: 2,
                 height: '100%',
+                '& .MuiTypography-root': {
+                  color: (theme) => theme.palette.mode === 'dark' ? '#000000' : 'inherit'
+                }
               }}
               elevation={3}
             >

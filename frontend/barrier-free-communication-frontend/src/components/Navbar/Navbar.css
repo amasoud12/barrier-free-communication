@@ -48,3 +48,14 @@ ul li {
     background: #2d3235;
     color: #ffffff;
 }
+
+.dark .navbar a.active {
+    color: #61a9bd;
+    font-weight: 600;
+    text-shadow: 0 0 1px rgba(97, 169, 189, 0.3);
+}
+
+.dark .navbar a:hover {
+    color: #61a9bd;
+    transition: color 0.3s ease;
+}

@@ -325,21 +325,22 @@ const ASL = ({ theme }) => {
 
     const handleUpload = async () => {
         if (!file) {
-        alert('Please select a .wav file to upload.');
-        return;
+            alert('Please select a .wav file to upload.');
+            return;
         }
 
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-        const response = await axios.post('https://steady-pocket-production.up.railway.app/upload', formData);
-        setTranscript(response.data.text);
-        setInputValue(response.data.text); // Set transcription to input
-        fetchData(); // Convert transcription to ASL
+            const response = await axios.post('https://steady-pocket-production.up.railway.app/upload', formData);
+            setTranscript(response.data.text);
+            setInputValue(response.data.text); // Set transcription to input
+            setASLFlag(0); // Reset ASL flag
+            setDownloadASLFlag(0); // Reset download flag
         } catch (error) {
-        console.error('Error uploading file:', error);
-        setTranscript('Error processing file.');
+            console.error('Error uploading file:', error);
+            setTranscript('Error processing file.');
         }
     };
 
@@ -347,12 +348,12 @@ const ASL = ({ theme }) => {
     // Stop recording live audio
     const stopRecording = () => {
         if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stop();
-        setRecording(false);
+            mediaRecorderRef.current.stop();
+            setRecording(false);
 
-        if (audioStreamRef.current) {
-            audioStreamRef.current.getTracks().forEach((track) => track.stop());
-        }
+            if (audioStreamRef.current) {
+                audioStreamRef.current.getTracks().forEach((track) => track.stop());
+            }
         }
     };
 
@@ -361,8 +362,8 @@ const ASL = ({ theme }) => {
         const reader = new FileReader();
         reader.readAsDataURL(audioChunk);
         reader.onloadend = () => {
-        const base64Data = reader.result.split(',')[1];
-        socket.current.emit('audio chunk', base64Data); // Ensure this event matches backend
+            const base64Data = reader.result.split(',')[1];
+            socket.current.emit('audio chunk', base64Data); // Ensure this event matches backend
         };
     };
 
@@ -411,18 +412,16 @@ const ASL = ({ theme }) => {
         
             <div className="content-wrapper">
                 <h1 style={{ textAlign: "center", marginTop: "20px", color: theme === 'dark' ? '#fff' : '#000' }}>
-                    {t('audio_to_asl')}
+                    {t('audio_to_asl')}<i class="fa-solid fa-hands-asl-interpreting"></i>
                 </h1>
                 
                 <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
                     <Box sx={{ padding: 1, flex: 0.3 }}>
-                        <img src={AudiotoASL} alt='no image' style={{ height: "300px", width: "400px" }} />
+                        <img src={AudiotoASL} alt='no image' style={{ height: "400px", width: "500px" }} />
                     </Box>
                     <Box sx={{ padding: 1, flex: 0.3 }}>
                         <div>
-                            <FormControl>
-                                <FormControlLabel value="consent" control={<Radio defaultChecked />} label={t('allow_record')} />
-                            </FormControl>
+                            <Typography>Choose the audio input mode</Typography>
                         </div>
                         <div sx={{ margin: "2px" }}>
                             <MicNoneOutlinedIcon className="record-audio" color="black" fontSize="large" style={{ marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick} />
@@ -466,7 +465,7 @@ const ASL = ({ theme }) => {
                         </div>
                     </Box>
                     <Box sx={{ padding: 1, flex: 0.3 }}>
-                        {ASLflag && downloadASLFlag ?
+                        {ASLflag ?
                             <div sx={{ margin: "2px" }}>
                                 <div>
                                     <video
@@ -481,11 +480,13 @@ const ASL = ({ theme }) => {
                                         Your browser does not support the video tag.
                                     </video>
                                 </div>
-                                <div>
-                                    <button className="card-button custom-button save-asl" onClick={handleDownloadASL} disabled={isLoading}>
-                                        {isLoading ? t('downloading') : t('save_asl')}
-                                    </button>
-                                </div>
+                                {downloadASLFlag && wordArray.length > 0 && (
+                                    <div>
+                                        <button className="card-button custom-button save-asl" onClick={handleDownloadASL} disabled={isLoading}>
+                                            {isLoading ? t('downloading') : t('save_asl')}
+                                        </button>
+                                    </div>
+                                )}
                             </div> : null}
         
                         {transcriptionFlag && downloadTranslationFlag ?
