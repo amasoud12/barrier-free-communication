@@ -12,14 +12,25 @@
 }
 
 .asl-container {
-    min-height: 100vh;
+    
+    background-image: url('/assets/backgroundimg.png'); /* Update path if needed */
+    background-repeat: no-repeat;
+    max-height: 150vh;
+    min-width: 200vw;
     padding: 20px;
     transition: all 0.3s ease;
 }
 
+.aslcontent {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
 .asl-container.dark {
-    background-color: #222222;
+    background-color: rgba(34, 34, 34, 0.85);
     color: #ffffff;
+    background-blend-mode: overlay;
 }
 
 .asl-container.dark .MuiFormControlLabel-label,
@@ -52,4 +63,11 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dark .content-wrapper {
+    background-color: rgba(34, 34, 34, 0.9);
 }

@@ -416,10 +416,7 @@ const ASL = ({ theme }) => {
                 </h1>
                 
                 <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
-                    <Box sx={{ padding: 1, flex: 0.3 }}>
-                        <img src={AudiotoASL} alt='no image' style={{ height: "400px", width: "500px" }} />
-                    </Box>
-                    <Box sx={{ padding: 1, flex: 0.3 }}>
+                    <Box classname="aslcontent" sx={{ padding: 1, flex: 0.3 }}>
                         <div>
                             <Typography>Choose the audio input mode</Typography>
                         </div>
