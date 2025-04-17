@@ -12,19 +12,28 @@
 }
 
 .asl-container {
-    
     background-image: url('/assets/backgroundimg.png'); /* Update path if needed */
     background-repeat: no-repeat;
-    max-height: 150vh;
-    min-width: 200vw;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
     padding: 20px;
     transition: all 0.3s ease;
+    overflow: hidden;
 }
-
+.button-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
 .aslcontent {
     text-align: center;
     align-items: center;
     justify-content: center;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 .asl-container.dark {
@@ -60,12 +69,21 @@
 }
 
 .content-wrapper {
-    max-width: 1200px;
+    max-width: 60%;
     margin: 0 auto;
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.content-wrapper button {
+    margin: 10px auto;
+}
+
+.content-wrapper video {
+    margin: 0 auto;
 }
 
 .dark .content-wrapper {

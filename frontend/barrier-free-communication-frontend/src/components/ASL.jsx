@@ -411,23 +411,21 @@ const ASL = ({ theme }) => {
             )}
         
             <div className="content-wrapper">
-                <h1 style={{ textAlign: "center", marginTop: "20px", color: theme === 'dark' ? '#fff' : '#000' }}>
+                <h1 style={{ textAlign: "center", marginTop: "20px", marginBottom:"20px", color: theme === 'dark' ? '#fff' : '#000' }}>
                     {t('audio_to_asl')}<i class="fa-solid fa-hands-asl-interpreting"></i>
                 </h1>
-                
-                <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
-                    <Box classname="aslcontent" sx={{ padding: 1, flex: 0.3 }}>
-                        <div>
+                        <div sx={{ margin: "10px" }}>
                             <Typography>Choose the audio input mode</Typography>
                         </div>
-                        <div sx={{ margin: "2px" }}>
-                            <MicNoneOutlinedIcon className="record-audio" color="black" fontSize="large" style={{ marginTop: "10px", marginLeft: "50px", marginRight: "15px", cursor: "pointer" }} onClick={handleRecordClick} />
+                            
+                            <MicNoneOutlinedIcon className="record-audio" color="black" fontSize="large" style={{ marginTop: "10px", marginRight:"10px", cursor: "pointer" }} onClick={handleRecordClick} />
                             <FileUploadOutlinedIcon className="audio-upload" color="black" fontSize="large" style={{ cursor: "pointer" }} onClick={handleUploadClick} />
-        
+                          
+                        <div sx={{ margin: "2px" }}>
                             {fileUpload ? (
                                 <div className="audio-upload">
                                     <input type="file" accept=".wav" onChange={handleFileChange} />
-                                    <button className="custom-button" onClick={handleUpload}>{t('upload')}</button>
+                                    <button className="card-button custom-button" onClick={handleUpload}>{t('upload')}</button>
                                 </div>) : null}
         
                             <div>
@@ -436,32 +434,38 @@ const ASL = ({ theme }) => {
                                     <p>{transcript}</p>
                                 </div>
                             </div>
-        
-                            <div>
+                            <div className="button-row">
+                                <div>
                                 <h3>{t('translate_to')}</h3>
+                                </div>
+                                <div>
                                 <select className="select-translation" value={selectedOption} onChange={handleChange}>
                                     <option value="Select Option">{t('select_one')}</option>
                                     <option value="English">English</option>
                                     <option value="Hindi">हिन्दी</option>
                                     <option value="Arabic">العربية</option>
                                 </select>
+                                </div>
+                                </div>
         
-                                <p>{t('selected_option')} {selectedOption}</p>
-                            </div>
+                              
                         </div>
-        
+
+                        
                         <div>
-                            <button className="card-button custom-button view-asl" onClick={fetchData}>
-                                {t('view_asl')}
-                            </button>
+                        <div className="button-row">
+    <div>
+        <button className="card-button custom-button view-asl" onClick={fetchData}>
+            {t('view_asl')}
+        </button>
+    </div>
+    <div>
+        <button className="card-button custom-button view-translation" onClick={fetchTranslatedData}>
+            {t('view_translation')}
+        </button>
+    </div>
+</div>
                         </div>
-                        <div>
-                            <button className="card-button custom-button view-translation" onClick={fetchTranslatedData}>
-                                {t('view_translation')}
-                            </button>
-                        </div>
-                    </Box>
-                    <Box sx={{ padding: 1, flex: 0.3 }}>
                         {ASLflag ?
                             <div sx={{ margin: "2px" }}>
                                 <div>
@@ -493,8 +497,7 @@ const ASL = ({ theme }) => {
                                     {t('save_translation')}
                                 </button>
                             </div> : null}
-                    </Box>
-                </Stack>
+                    
             </div>
         </div>
     );
