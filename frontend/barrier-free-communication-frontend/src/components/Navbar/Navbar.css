@@ -16,9 +16,9 @@
 }
 
 .navbar a.active {
-    color: rgb(135, 164, 168);
-  }
-
+    color: #ffffff;
+    font-weight: 500;
+}
 
 .logo{
     width: 200px;

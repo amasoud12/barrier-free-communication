@@ -40,7 +40,7 @@ html[dir="rtl"] .MuiCardContent-root {
 
 /* Dark theme styles */
 .dark .feedback-card {
-  background-color: #333;
+  background-color: #222222;
   color: white;
   border-color: #555;
 }
@@ -50,12 +50,16 @@ html[dir="rtl"] .MuiCardContent-root {
 }
 
 .dark .MuiInputBase-root {
-  background-color: #444;
+  background-color: #333;
   color: white;
 }
 
 .dark .MuiInputBase-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .MuiTypography-root {
+  color: white;
 }
 
 .dark .MuiTypography-colorTextSecondary {
@@ -70,10 +74,28 @@ html[dir="rtl"] .MuiCardContent-root {
   color: rgba(255, 255, 255, 0.7);
 }
 
+.dark .MuiRating-icon {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.dark .MuiRating-iconFilled {
+  color: #ffd700;
+}
+
+.dark .MuiRating-iconHover {
+  color: #ffd700;
+}
+
 .feedback-container {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.dark.feedback-container {
+  background-color: #222222;
 }
 
 /* Responsive adjustments */
@@ -85,4 +107,4 @@ html[dir="rtl"] .MuiCardContent-root {
   .feedback-card {
     margin-bottom: 15px;
   }
-} 
+}

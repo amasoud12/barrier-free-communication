@@ -113,9 +113,7 @@ function YouTubeCaptionGenerator({ theme }) {
   };
 
   return (
-    <div className={`youtube-container ${theme === 'dark' ? 'dark' : ''}`}>
-
-      {/* Trigger the Joyride tutorial */}
+    <div className={`youtube-container ${theme}`}>
       {runTutorial && (
         <Joyride
           steps={steps}
@@ -133,84 +131,82 @@ function YouTubeCaptionGenerator({ theme }) {
         />
       )}
 
-      <h1 className="youtube-title">{t('social_media_captioning')}</h1>
+      <h1 style={{ textAlign: "center", marginTop: "20px", color: theme === 'dark' ? '#fff' : '#000' }}>
+        {t('Social Media Captioning')}
+      </h1>
 
-      <div>
-        <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
-          <Box sx={{ padding: 1, flex: 0.3 }}>
-            <img 
-              src={captioningImage} 
-              alt="Captioning illustration" 
-              style={{ height: "300px", width: "400px" }}
-            />
-          </Box>
+      <Stack direction="row" spacing={1} justifyContent="center" margin={2}>
+        <Box sx={{ padding: 1, flex: 0.3 }}>
+          <img src={captioningImage} alt='no image' style={{ height: "300px", width: "400px" }} />
+        </Box>
 
-          <Box sx={{ padding: 1, flex: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div className="youtube-form-container">
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <label htmlFor="youtube-url" className="youtube-label">
-                  {t('youtube_label')}
-                </label>
+        <Box sx={{ padding: 1, flex: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="youtube-form-container">
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <label htmlFor="youtube-url" className="youtube-label">
+                {t('youtube_label')}
+              </label>
 
-                <input
-                  id="youtube-url"
-                  type="text"
-                  placeholder={t('enter_youtube_url')}
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  className="youtube-input"
-                />
+              <input
+                id="youtube-url"
+                type="text"
+                placeholder={t('enter_youtube_url')}
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                className="youtube-input"
+              />
+
+              <button 
+                id="generate-btn"
+                type="submit" 
+                className="card-button custom-button youtube-button"
+                disabled={isLoading}
+              >
+                {isLoading ? t('generating') : t('generate_caption')}
+              </button>
+            </form>
+          </div>
+
+          {error && <p className="youtube-error">{error}</p>}
+
+          {captions && (
+            <div className="youtube-captions-container">
+              <h2 style={{ color: theme === 'dark' ? '#fff' : '#000' }}>
+                {t('generated_captions')}
+              </h2>
+              <div className="youtube-captions" style={{ color: theme === 'dark' ? '#fff' : '#000' }}>
+                {captions}
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: '10px' }}>
+                <FormControl sx={{ minWidth: 120 }} size="small">
+                  <InputLabel id="file-type-label">{t('file_type')}</InputLabel>
+                  <Select
+                    labelId="file-type-label"
+                    id="file-type-select"
+                    value={fileType}
+                    label={t('file_type')}
+                    onChange={handleFileTypeChange}
+                    className={theme === 'dark' ? 'dark-select' : ''}
+                  >
+                    <MenuItem value="txt">TXT</MenuItem>
+                    <MenuItem value="pdf">PDF</MenuItem>
+                    <MenuItem value="docx">DOCX</MenuItem>
+                  </Select>
+                </FormControl>
 
                 <button 
-                  id="generate-btn"
-                  type="submit" 
-                  className="card-button custom-button youtube-button"
-                  disabled={isLoading}
+                  id="save-btn"
+                  onClick={handleSaveCaptions}
+                  className="youtube-button"
                 >
-                  {isLoading ? t('generating') : t('generate_caption')}
+                  {t('save_captions')}
                 </button>
-              </form>
-            </div>
-
-            {error && <p className="youtube-error">{error}</p>}
-
-            {captions && (
-              <div className="youtube-captions-container">
-                <h2>{t('generated_captions')}</h2>
-                <div className="youtube-captions">
-                  {captions}
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: '10px' }}>
-                  <FormControl sx={{ minWidth: 120 }} size="small">
-                    <InputLabel id="file-type-label">{t('file_type')}</InputLabel>
-                    <Select
-                      labelId="file-type-label"
-                      id="file-type-select"
-                      value={fileType}
-                      label={t('file_type')}
-                      onChange={handleFileTypeChange}
-                      className={theme === 'dark' ? 'dark-select' : ''}
-                    >
-                      <MenuItem value="txt">TXT</MenuItem>
-                      <MenuItem value="pdf">PDF</MenuItem>
-                      <MenuItem value="docx">DOCX</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <button 
-                    id="save-btn"
-                    onClick={handleSaveCaptions}
-                    className="youtube-button"
-                  >
-                    {t('save_captions')}
-                  </button>
-                </div>
               </div>
-            )}
-          </Box>
-        </Stack>
-      </div>
+            </div>
+          )}
+        </Box>
+      </Stack>
     </div>
   );
 }

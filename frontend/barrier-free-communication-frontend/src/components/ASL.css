@@ -1,4 +1,4 @@
-.card-button{
+.card-button {
     width: 200px;
     margin-top: 20px;
     margin-right: 20px;
@@ -7,6 +7,49 @@
     cursor: pointer;
 }
 
-.audio-upload .dropdown{
+.audio-upload .dropdown {
     flex-direction: column;
+}
+
+.asl-container {
+    min-height: 100vh;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.asl-container.dark {
+    background-color: #222222;
+    color: #ffffff;
+}
+
+.asl-container.dark .MuiFormControlLabel-label,
+.asl-container.dark .MuiFormLabel-root,
+.asl-container.dark h3,
+.asl-container.dark p {
+    color: #ffffff;
+}
+
+.asl-container.dark .MuiRadio-root {
+    color: #ffffff;
+}
+
+.asl-container.dark .MuiSvgIcon-root {
+    color: #ffffff;
+}
+
+.asl-container.dark select {
+    background-color: #222222;
+    color: #ffffff;
+    border-color: #555;
+}
+
+.asl-container.dark select option {
+    background-color: #222222;
+    color: #ffffff;
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }

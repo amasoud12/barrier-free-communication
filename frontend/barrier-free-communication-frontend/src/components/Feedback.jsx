@@ -52,7 +52,8 @@ const Feedback = ({ theme }) => {
                 },
                 body: JSON.stringify({
                     feedback,
-                    rating
+                    rating,
+                    email
                 })
             });
 
@@ -75,21 +76,17 @@ const Feedback = ({ theme }) => {
                 );
             } catch (emailError) {
                 console.error('Error sending email:', emailError);
-                // Don't throw error here to keep the main functionality working
             }
 
-            const data = await response.json();
+            await fetchFeedbacks(); // Refresh feedbacks after submission
             
-            // Update feedbacks list with the new feedback
-            await fetchFeedbacks();
-            
-            alert("Feedback submitted successfully!");
+            alert(t('feedback_success'));
             setFeedback("");
             setRating(0);
             setEmail("");
         } catch (error) {
             console.error('Error sending feedback:', error);
-            alert("Failed to send feedback. Please try again.");
+            alert(t('feedback_error'));
         }
         setSending(false);
     };
@@ -176,7 +173,12 @@ const Feedback = ({ theme }) => {
                                 ml: isRTL ? 0 : 2,
                                 mr: isRTL ? 2 : 0,
                                 fontFamily: fontStyle,
-                                fontSize: `${fontSize}px`
+                                fontSize: `${fontSize}px`,
+                                backgroundColor: '#61a9bd',
+                                color: '#ffffff',
+                                '&:hover': {
+                                    backgroundColor: '#4a8a9e'
+                                }
                             }}
                             onClick={handleSubmit}
                             disabled={!feedback || !rating || !email || sending}
@@ -188,54 +190,65 @@ const Feedback = ({ theme }) => {
             </Card>
 
             <Box display="flex" alignItems="center" mb={2}>
-                <Divider sx={{ flexGrow: 1, mr: isRTL ? 0 : 2, ml: isRTL ? 2 : 0 }} />
-                <Typography variant="body2" color="textSecondary" sx={{ 
+                <Divider sx={{ flexGrow: 1, mr: isRTL ? 0 : 2, ml: isRTL ? 2 : 0, backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)' }} />
+                <Typography variant="body2" sx={{ 
                     fontSize: `${fontSize}px`, 
                     fontFamily: fontStyle,
-                    mx: 2
+                    mx: 2,
+                    color: theme === 'dark' ? '#ffffff' : 'rgba(0, 0, 0, 0.6)'
                 }}>
                     {t('recent_feedback')}
                 </Typography>
-                <Divider sx={{ flexGrow: 1, ml: isRTL ? 0 : 2, mr: isRTL ? 2 : 0 }} />
+                <Divider sx={{ flexGrow: 1, ml: isRTL ? 0 : 2, mr: isRTL ? 2 : 0, backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)' }} />
             </Box>
 
             <Grid container spacing={2} direction={isRTL ? 'row-reverse' : 'row'}>
-                {feedbacks.slice(0, 2).map((fb, index) => (
+                {feedbacks.map((item, index) => (
                     <Grid item xs={12} sm={6} key={index}>
-                        <Card variant="outlined">
+                        <Card variant="outlined" className="feedback-card">
                             <CardContent>
-                                <Box display="flex" alignItems="center" mb={1} flexDirection={isRTL ? 'row-reverse' : 'row'}>
-                                    <Avatar sx={{ 
-                                        bgcolor: 'primary.main', 
-                                        mr: isRTL ? 0 : 2,
-                                        ml: isRTL ? 2 : 0
-                                    }}>
-                                        {fb.name ? fb.name[0] : 'A'}
+                                <Box display="flex" alignItems="center" mb={1}>
+                                    <Avatar sx={{ bgcolor: '#61a9bd', width: 32, height: 32, fontSize: '1rem' }}>
+                                        {item.name ? item.name[0].toUpperCase() : 'U'}
                                     </Avatar>
-                                    <Box sx={{ textAlign: isRTL ? 'right' : 'left' }}>
-                                        <Typography variant="subtitle1" sx={{ fontSize: `${fontSize}px`, fontFamily: fontStyle }}>
-                                            {fb.name || t('anonymous_user')}
+                                    <Box ml={1}>
+                                        <Typography variant="body1" sx={{ 
+                                            fontFamily: fontStyle,
+                                            fontSize: `${fontSize}px`,
+                                            color: theme === 'dark' ? '#ffffff' : 'inherit'
+                                        }}>
+                                            {item.name || t('anonymous_user')}
                                         </Typography>
-                                        <Typography variant="caption" color="textSecondary" sx={{ fontSize: `${parseInt(fontSize) - 2}px`, fontFamily: fontStyle }}>
-                                            {fb.date}
+                                        <Typography variant="body2" sx={{ 
+                                            fontFamily: fontStyle,
+                                            fontSize: `${parseInt(fontSize) - 2}px`,
+                                            color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'
+                                        }}>
+                                            {item.date}
                                         </Typography>
                                     </Box>
                                 </Box>
-                                <Typography sx={{ 
-                                    fontSize: `${fontSize}px`, 
+                                <Typography variant="body1" sx={{ 
+                                    mt: 1,
                                     fontFamily: fontStyle,
-                                    textAlign: isRTL ? 'right' : 'left'
+                                    fontSize: `${fontSize}px`,
+                                    color: theme === 'dark' ? '#ffffff' : 'inherit'
                                 }}>
-                                    {fb.comment}
+                                    {item.comment}
                                 </Typography>
-                                <Box sx={{ display: 'flex', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
-                                    <Rating value={fb.rating} readOnly sx={{ 
+                                <Rating 
+                                    value={item.rating} 
+                                    readOnly 
+                                    sx={{
                                         mt: 1,
                                         '& .MuiRating-icon': {
-                                            fontSize: `${parseInt(fontSize) + 2}px`
+                                            color: theme === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'
+                                        },
+                                        '& .MuiRating-iconFilled': {
+                                            color: '#ffd700'
                                         }
-                                    }} />
-                                </Box>
+                                    }}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

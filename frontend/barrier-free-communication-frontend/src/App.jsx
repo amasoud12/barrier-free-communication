@@ -14,6 +14,7 @@ import Feedback from './components/Feedback'
 import { ThemeProvider } from './context/ThemeContext'
 import { LanguageProvider } from './context/LanguageContext'
 import { useTranslation } from 'react-i18next'
+import Footer from './components/Footer/Footer'
 
 const App = () => {
   const [theme, setTheme] = useState('light');
@@ -40,6 +41,7 @@ const App = () => {
             {theme == 'dark' && <h4 className='feedback-fb' style={{color: 'white'}}>{t('feedback')}</h4>}
             <Link to="/feedback" className='feedback-ch'>{t('click_here')}</Link>
           </div>
+          <Footer theme={theme} />
         </div>
       </ThemeProvider>
     </LanguageProvider>

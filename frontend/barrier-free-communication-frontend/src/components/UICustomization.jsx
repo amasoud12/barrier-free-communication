@@ -47,7 +47,13 @@ const UICustomization = ({ theme }) => {
 
   return (
     <div style={{ direction: textDirection }} className={theme === 'dark' ? 'dark' : ''}>
-      <h1 style={{ textAlign: "center", marginTop: "20px" }}>{t('general_ui_customization')}</h1>
+      <h1 style={{ 
+        textAlign: "center", 
+        marginTop: "20px",
+        color: theme === 'dark' ? '#fff' : '#000'
+      }}>
+        {t('general_ui_customization')}
+      </h1>
       <Stack direction={isRTL ? "row-reverse" : "row"} spacing={3} justifyContent="center" margin={5}>
         <Box sx={{ border: 1, padding: 2, textAlign: isRTL ? "right" : "center", flex: 1 }} className="ui-box">
           <h3 style={{ textAlign: isRTL ? "right" : "center", marginTop: "20px", marginBottom: "20px" }}>{t('font_style')}</h3>

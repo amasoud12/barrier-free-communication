@@ -32,8 +32,30 @@ html[dir="rtl"] .navbar ul li {
   min-height: 100vh;
   background: #ffffff;
   transition: 0.5s;
+  display: flex;
+  flex-direction: column;
 }
 
 .container.dark{
   background: #222222;
+}
+
+.feedback {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  padding-left: 50px;
+}
+
+.feedback-fb {
+  margin: 0;
+  display: inline;
+}
+
+.feedback-ch {
+  text-decoration: none;
+  color: #61a9bd;
+  cursor: pointer;
+  display: inline;
 }

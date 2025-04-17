@@ -33,15 +33,11 @@ const Navbar = ({theme, setTheme}) => {
                 <li>
                     <NavLink to='/ui'>{t('ui_customization')}</NavLink>
                 </li>
-                <li>
-                    <NavLink to='/VoiceCommand'>{t('voice_command')}</NavLink>
-                </li>
+                
                 <li>
                     <NavLink to='/Help'>{t('help')}</NavLink>
                 </li>
-                <li>
-                    <NavLink to='/FAQs'>{t('faqs')}</NavLink>
-                </li>
+                
             </ul>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
