@@ -20,10 +20,12 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 const Help = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { fontStyle, fontSize, theme } = useTheme();
   const isRTL = language === 'ar';
 
   const helpItems = [
@@ -80,7 +82,12 @@ const Help = () => {
         variant="h4"
         align="center"
         gutterBottom
-        sx={{ color: '#61a9bd', fontWeight: 'bold' }}
+        sx={{ 
+          color: theme === 'dark' ? '#000000' : '#61a9bd', 
+          fontWeight: 'bold',
+          fontFamily: fontStyle,
+          fontSize: `${fontSize}px`
+        }}
       >
         {t('help_feature_overview')}
       </Typography>
@@ -89,13 +96,14 @@ const Help = () => {
         {helpItems.map((item, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card
+              className={theme === 'dark' ? 'dark-mode-card' : ''}
               sx={{
                 backgroundColor: '#e0f5fb',
                 borderLeft: '5px solid #61a9bd',
                 borderRadius: 2,
                 height: '100%',
                 '& .MuiTypography-root': {
-                  color: (theme) => theme.palette.mode === 'dark' ? '#000000' : 'inherit'
+                  color: theme === 'dark' ? '#000000 !important' : 'inherit'
                 }
               }}
               elevation={3}
@@ -108,11 +116,25 @@ const Help = () => {
                   >
                     {item.icon}
                   </Box>
-                  <Typography variant="h6" sx={{ color: '#333' }}>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      color: theme === 'dark' ? '#000000' : '#333',
+                      fontFamily: fontStyle,
+                      fontSize: `${fontSize}px`
+                    }}
+                  >
                     {item.title}
                   </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography 
+                  variant="body2" 
+                  sx={{
+                    color: theme === 'dark' ? '#000000' : 'text.secondary',
+                    fontFamily: fontStyle,
+                    fontSize: `${parseInt(fontSize) - 4}px`
+                  }}
+                >
                   {item.description}
                 </Typography>
               </CardContent>

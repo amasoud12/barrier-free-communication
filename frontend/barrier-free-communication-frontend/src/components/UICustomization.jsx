@@ -97,7 +97,6 @@ const UICustomization = ({ theme }) => {
               <MenuItem value="18">18</MenuItem>
               <MenuItem value="20">20</MenuItem>
               <MenuItem value="22">22</MenuItem>
-              <MenuItem value="24">24</MenuItem>
             </Select>
           </FormControl>
         </Box>
