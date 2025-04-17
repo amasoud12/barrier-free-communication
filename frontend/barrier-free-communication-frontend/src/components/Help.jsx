@@ -18,56 +18,62 @@ import {
   OndemandVideo,
   Article,
 } from '@mui/icons-material';
-
-const helpItems = [
-  {
-    icon: <Videocam fontSize="large" />,
-    title: 'YouTube Captioning',
-    description: 'Generate captions from YouTube videos using the video URL.',
-  },
-  {
-    icon: <Gesture fontSize="large" />,
-    title: 'ASL Gesture Input',
-    description: 'Capture sign language input from webcam in real-time.',
-  },
-  {
-    icon: <OndemandVideo fontSize="large" />,
-    title: 'ASL Output',
-    description: 'Convert audio/text into American Sign Language gestures.',
-  },
-  {
-    icon: <TextFields fontSize="large" />,
-    title: 'Text Output',
-    description: 'Generate readable text from various inputs like audio or sign.',
-  },
-  {
-    icon: <Mic fontSize="large" />,
-    title: 'Live Audio Input',
-    description: 'Record live microphone audio for transcription.',
-  },
-  {
-    icon: <UploadFile fontSize="large" />,
-    title: 'WAV File Upload',
-    description: 'Upload a WAV file and generate transcript or captions.',
-  },
-  {
-    icon: <Translate fontSize="large" />,
-    title: 'Translate to Other Languages',
-    description: 'Transcribe output and convert it to multiple languages.',
-  },
-  {
-    icon: <Language fontSize="large" />,
-    title: 'Accessibility Tools',
-    description: 'Assistive tools for enhanced accessibility across devices.',
-  },
-  {
-    icon: <Article fontSize="large" />,
-    title: 'Save Transcripts',
-    description: 'Export your captions in .txt, .pdf, or other formats.',
-  },
-];
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../context/LanguageContext';
 
 const Help = () => {
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+  const isRTL = language === 'ar';
+
+  const helpItems = [
+    {
+      icon: <Videocam fontSize="large" />,
+      title: t('youtube_captioning'),
+      description: t('youtube_captioning_desc'),
+    },
+    {
+      icon: <Gesture fontSize="large" />,
+      title: t('asl_gesture_input'),
+      description: t('asl_gesture_input_desc'),
+    },
+    {
+      icon: <OndemandVideo fontSize="large" />,
+      title: t('asl_output'),
+      description: t('asl_output_desc'),
+    },
+    {
+      icon: <TextFields fontSize="large" />,
+      title: t('text_output'),
+      description: t('text_output_desc'),
+    },
+    {
+      icon: <Mic fontSize="large" />,
+      title: t('live_audio_input'),
+      description: t('live_audio_input_desc'),
+    },
+    {
+      icon: <UploadFile fontSize="large" />,
+      title: t('wav_file_upload'),
+      description: t('wav_file_upload_desc'),
+    },
+    {
+      icon: <Translate fontSize="large" />,
+      title: t('translate_languages'),
+      description: t('translate_languages_desc'),
+    },
+    {
+      icon: <Language fontSize="large" />,
+      title: t('accessibility_tools'),
+      description: t('accessibility_tools_desc'),
+    },
+    {
+      icon: <Article fontSize="large" />,
+      title: t('save_transcripts'),
+      description: t('save_transcripts_desc'),
+    },
+  ];
+
   return (
     <Container sx={{ paddingY: 5 }}>
       <Typography
@@ -76,7 +82,7 @@ const Help = () => {
         gutterBottom
         sx={{ color: '#61a9bd', fontWeight: 'bold' }}
       >
-        Help & Feature Overview
+        {t('help_feature_overview')}
       </Typography>
 
       <Grid container spacing={3} justifyContent="center">
