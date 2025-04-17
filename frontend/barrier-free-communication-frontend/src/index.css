@@ -58,4 +58,5 @@ html[dir="rtl"] .navbar ul li {
   color: #61a9bd;
   cursor: pointer;
   display: inline;
+  margin-left: 5px;
 }
