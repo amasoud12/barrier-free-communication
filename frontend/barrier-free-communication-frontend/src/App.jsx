@@ -15,6 +15,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import { LanguageProvider } from './context/LanguageContext'
 import { useTranslation } from 'react-i18next'
 import Footer from './components/Footer/Footer'
+import ASLVideoText from './components/ASLVideoText'
 
 const App = () => {
   const [theme, setTheme] = useState('light');
@@ -34,6 +35,7 @@ const App = () => {
             <Route path='/audioASL' element={<ASL theme={theme} setTheme={setTheme}/>}/>
             <Route path='/youtube' element={<YouTubeCaptionGenerator theme={theme} setTheme={setTheme}/>}/>
             <Route path='/feedback' element={<Feedback theme={theme} setTheme={setTheme}/>}/>
+            <Route path='/aslText' element={<ASLVideoText theme={theme} setTheme={setTheme}/>}/>
           </Routes>
 
           <div className='feedback'>
