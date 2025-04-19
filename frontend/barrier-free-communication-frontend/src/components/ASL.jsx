@@ -107,7 +107,7 @@ const ASL = ({ theme }) => {
 
     useEffect(() => {
         // Connect to backend WebSocket for live transcription
-        socket.current = io('https://steady-pocket-production.up.railway.app/');
+        socket.current = io('https://precious-books-production.up.railway.app');
 
         socket.current.on('transcription', (data) => {
         setLiveTranscript((prev) => prev + ' ' + data.text);
@@ -333,7 +333,7 @@ const ASL = ({ theme }) => {
         formData.append('file', file);
 
         try {
-            const response = await axios.post('https://steady-pocket-production.up.railway.app/upload', formData);
+            const response = await axios.post('https://precious-books-production.up.railway.app/upload', formData);
             setTranscript(response.data.text);
             setInputValue(response.data.text); // Set transcription to input
             setASLFlag(0); // Reset ASL flag
@@ -375,7 +375,7 @@ const ASL = ({ theme }) => {
             target: event.target.value
           };
 
-          const response = await fetch('https://steady-pocket-production.up.railway.app/transcribe', {
+          const response = await fetch('https://precious-books-production.up.railway.app/transcribe', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',  // Specify that we're sending JSON

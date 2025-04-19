@@ -30,7 +30,7 @@ const Feedback = ({ theme }) => {
 
     const fetchFeedbacks = async () => {
         try {
-            const response = await fetch('http://localhost:5000/get-feedbacks');
+            const response = await fetch('https://precious-books-production.up.railway.app/get-feedbacks');
             if (!response.ok) {
                 throw new Error('Failed to fetch feedbacks');
             }
@@ -45,7 +45,7 @@ const Feedback = ({ theme }) => {
         setSending(true);
         try {
             // Send feedback to backend
-            const response = await fetch('http://localhost:5000/send-feedback', {
+            const response = await fetch('https://precious-books-production.up.railway.app/send-feedback', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -43,7 +43,7 @@ function YouTubeCaptionGenerator({ theme }) {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/generate-captions', {
+      const response = await axios.post('https://precious-books-production.up.railway.app/generate-captions', {
         youtube_url: youtubeUrl,
       });
       setCaptions(response.data.captions);
